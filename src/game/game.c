@@ -3,10 +3,17 @@
 #include <whitgl/sys.h>
 #include <resource.h>
 
-game_game game_game_zero()
+game_game game_game_zero(const game_map* map)
 {
 	game_game game;
-	game.snake = game_snake_zero();
+	whitgl_ivec snake_spawn = {1,1};
+	whitgl_int i;
+	for(i=0; i<NUM_TILES; i++)
+	{
+		if(map->tiles[i] == TILE_SPAWN)
+			snake_spawn = game_map_pos_from_index(i);
+	}
+	game.snake = game_snake_zero(snake_spawn);
 	return game;
 }
 
@@ -16,11 +23,7 @@ game_game game_update(game_game game, const game_map* map)
 	return game;
 }
 
-void game_draw(game_game game, const game_map* map, whitgl_ivec screen_size)
+void game_draw(game_game game)
 {
-	whitgl_iaabb screen = {whitgl_ivec_zero, screen_size};
-	whitgl_sys_color background = {0x5a, 0x0f, 0x5f, 0xff};
-	whitgl_sys_draw_iaabb(screen, background);
-	game_map_draw(map);
 	game_snake_draw(game.snake);
 }

@@ -20,7 +20,7 @@ typedef struct
 	whitgl_float fall_speed;
 } game_snake;
 
-game_snake game_snake_zero();
+game_snake game_snake_zero(whitgl_ivec pos);
 game_snake game_snake_update(game_snake snake, const game_map* map);
 void game_snake_draw(game_snake snake);
 

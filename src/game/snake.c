@@ -6,16 +6,16 @@
 
 #include <resource.h>
 
-game_snake game_snake_zero()
+game_snake game_snake_zero(whitgl_ivec start)
 {
 	game_snake snake;
 	whitgl_int i;
 	for(i=0; i<MAX_SEGMENTS; i++)
 	{
-		whitgl_ivec pos = {i+3, 2};
+		whitgl_ivec pos = {start.x+i, start.y};
 		snake.pos[i] = pos;
 	}
-	snake.size = 6;
+	snake.size = 3;
 	snake.t = 0;
 	snake.dir = 3;
 	snake.do_reverse = false;

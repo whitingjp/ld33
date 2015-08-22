@@ -24,7 +24,7 @@ game_map game_map_zero()
 	}
 	return map;
 }
-void game_map_draw(const game_map* map)
+void game_map_draw(const game_map* map, whitgl_bool editor)
 {
 	whitgl_sprite map_sprite = {IMAGE_SPRITES, {0,32}, {8,8}};
 	whitgl_ivec i;
@@ -32,9 +32,16 @@ void game_map_draw(const game_map* map)
 	{
 		for(i.y=0; i.y<MAP_HEIGHT; i.y++)
 		{
-			if(game_map_get_tile(map, i) == TILE_EMPTY)
-				continue;
+			game_map_tile tile = game_map_get_tile(map, i);
 			whitgl_ivec draw_pos = whitgl_ivec_scale(i, map_sprite.size);
+			if(tile != TILE_WALL)
+			{
+				whitgl_ivec frame = {tile, 4};
+				if(editor)
+					whitgl_sys_draw_sprite(map_sprite, frame, draw_pos);
+				continue;
+			}
+
 			whitgl_int flags = 0;
 			whitgl_int j;
 			for(j=0; j<4; j++)

@@ -21,6 +21,7 @@ int main(int argc, char** argv)
 
 	bool fullscreen = false;
 	bool vsync = true;
+	bool can_edit = false;
 	int currentarg;
 	for(currentarg=1; currentarg<argc; currentarg++)
 	{
@@ -28,6 +29,8 @@ int main(int argc, char** argv)
 			fullscreen = true;
 		if(strncmp(argv[currentarg], "no_vsync", 7)==0)
 			vsync = false;
+		if(strncmp(argv[currentarg], "editor", 6)==0)
+			can_edit = true;
 	};
 
 	whitgl_sys_setup setup = whitgl_sys_setup_zero;
@@ -49,8 +52,10 @@ int main(int argc, char** argv)
 	double now = whitgl_sys_get_time();
 	whitgl_randseed(now*10000);
 
-	game_game game = game_game_zero();
 	game_map map = game_map_zero();
+	game_game game = game_game_zero(&map);
+
+	whitgl_bool editing = false;
 
 	whitgl_timer_init();
 
@@ -63,8 +68,16 @@ int main(int argc, char** argv)
 		while(whitgl_timer_should_do_frame(60))
 		{
 			whitgl_input_update();
-			game = game_update(game, &map);
-			map = editor_update(map, setup.pixel_size);
+			if(can_edit && whitgl_input_pressed(WHITGL_INPUT_START))
+			{
+				editing = !editing;
+				game = game_game_zero(&map);
+			}
+			if(editing)
+				map = editor_update(map, setup.pixel_size);
+			else
+				game = game_update(game, &map);
+
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 				running = false;
 			if(whitgl_sys_should_close())
@@ -72,7 +85,12 @@ int main(int argc, char** argv)
 		}
 
 		whitgl_sys_draw_init();
-		game_draw(game, &map, setup.size);
+		whitgl_iaabb screen = {whitgl_ivec_zero, setup.size};
+		whitgl_sys_color background = {0x5a, 0x0f, 0x5f, 0xff};
+		whitgl_sys_draw_iaabb(screen, background);
+		game_map_draw(&map, editing);
+		if(!editing)
+			game_draw(game);
 		whitgl_sys_draw_finish();
 	}
 
