@@ -7,8 +7,10 @@
 
 typedef struct
 {
+	whitgl_float t;
 	whitgl_ivec pos[MAX_SEGMENTS];
 	whitgl_int size;
+	whitgl_ivec old_pos;
 } game_snake;
 
 game_snake game_snake_zero();
