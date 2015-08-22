@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <string.h>
 
+#include <whitgl/file.h>
 #include <whitgl/input.h>
 #include <whitgl/logging.h>
 #include <whitgl/math.h>
@@ -53,6 +54,7 @@ int main(int argc, char** argv)
 	whitgl_randseed(now*10000);
 
 	game_map map = game_map_zero();
+	whitgl_file_load("data/level.lvl", sizeof(game_map), (void*)&map);
 	game_game game = game_game_zero(&map);
 
 	whitgl_bool editing = false;
@@ -93,6 +95,8 @@ int main(int argc, char** argv)
 			game_draw(game);
 		whitgl_sys_draw_finish();
 	}
+
+	whitgl_file_save("../../../../../data/level.lvl", sizeof(game_map), (void*)&map);
 
 	whitgl_input_shutdown();
 	whitgl_sound_shutdown();
