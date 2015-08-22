@@ -24,8 +24,7 @@ game_snake game_snake_update(game_snake snake)
 	whitgl_int i;
 	if(snake.t < 1)
 	{
-		// if(whitgl_input_pressed(WHITGL_INPUT_A))
-			snake.t = whitgl_fclamp(snake.t+1.0/8, 0, 1);
+			snake.t = whitgl_fclamp(snake.t+1.0/4, 0, 1);
 		return snake;
 	}
 	whitgl_ivec move = whitgl_ivec_zero;
@@ -78,7 +77,8 @@ void game_snake_draw(game_snake snake)
 	whitgl_sprite snake_sprite = {IMAGE_SPRITES, {0,0}, {8,8}};
 
 	whitgl_int i;
-	for(i=snake.size-2; i>=0; i--)
+	whitgl_int start = snake.t<1 ? snake.size-1 : snake.size-2;
+	for(i=start; i>=0; i--)
 	{
 		whitgl_ivec draw_pos = whitgl_ivec_scale(snake.pos[i], snake_sprite.size);
 		whitgl_int flag = 0;
@@ -91,6 +91,12 @@ void game_snake_draw(game_snake snake)
 			sub_pos = whitgl_fvec_scale(sub_pos, whitgl_ivec_to_fvec(snake_sprite.size));
 			draw_pos = whitgl_ivec_add(draw_pos, whitgl_fvec_to_ivec(sub_pos));
 			flag += whitgl_fpow(2, dir);
+		} else if(i==snake.size-1)
+		{
+			whitgl_int in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.old_pos,snake.pos[i]));
+			whitgl_int out_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[i-1],snake.pos[i]));
+			flag += whitgl_fpow(2, in_dir);
+			flag += whitgl_fpow(2, out_dir);
 		} else
 		{
 			whitgl_int in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[i+1],snake.pos[i]));
@@ -99,33 +105,40 @@ void game_snake_draw(game_snake snake)
 			flag += whitgl_fpow(2, out_dir);
 		}
 		whitgl_ivec frame = _game_snake_flags_to_frame(flag);
-		if(i == snake.size-1)
-			frame.y += 1;
 		whitgl_sys_draw_sprite(snake_sprite, frame, draw_pos);
 	}
-	whitgl_int tail_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-1], snake.old_pos));
-	whitgl_ivec tail_pos = whitgl_ivec_scale(snake.pos[snake.size-1], snake_sprite.size);
-	whitgl_sprite tail_sprite = {IMAGE_SPRITES, {0,64}, {8,8}};
-	switch(tail_dir)
-	{
-		case 0:
-			tail_sprite.size.y = 16;
-			break;
-		case 1:
-			tail_pos.x -= 8;
-			tail_sprite.size.x = 16;
-			tail_sprite.top_left.y += 16;
-			break;
-		case 2:
-			tail_pos.y -= 8;
-			tail_sprite.top_left.x += 32;
-			tail_sprite.size.y = 16;
-			break;
-		case 3:
-			tail_sprite.size.x = 16;
-			tail_sprite.top_left.y += 24;
-			break;
-	}
-	whitgl_ivec tail_frame = {snake.t*3.9999, 0};
-	whitgl_sys_draw_sprite(tail_sprite, tail_frame, tail_pos);
+	whitgl_int dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-1], snake.pos[snake.size-2]));
+	whitgl_ivec draw_pos = whitgl_ivec_scale(snake.pos[snake.size-1], snake_sprite.size);
+	whitgl_fvec sub_pos = whitgl_fvec_interpolate(whitgl_ivec_to_fvec(snake.old_pos), whitgl_ivec_to_fvec(snake.pos[snake.size-1]), snake.t);
+	sub_pos = whitgl_fvec_sub(sub_pos, whitgl_ivec_to_fvec(snake.pos[snake.size-1]));
+	sub_pos = whitgl_fvec_scale(sub_pos, whitgl_ivec_to_fvec(snake_sprite.size));
+	draw_pos = whitgl_ivec_add(draw_pos, whitgl_fvec_to_ivec(sub_pos));
+	whitgl_sprite tail_sprite = {IMAGE_SPRITES, {32,8}, {8,8}};
+	whitgl_ivec frame = {dir, 0};
+	whitgl_sys_draw_sprite(tail_sprite, frame, draw_pos);
+	// whitgl_int tail_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-1], snake.old_pos));
+	// whitgl_ivec tail_pos = whitgl_ivec_scale(snake.pos[snake.size-1], snake_sprite.size);
+	// whitgl_sprite tail_sprite = {IMAGE_SPRITES, {0,64}, {8,8}};
+	// switch(tail_dir)
+	// {
+	// 	case 0:
+	// 		tail_sprite.size.y = 16;
+	// 		break;
+	// 	case 1:
+	// 		tail_pos.x -= 8;
+	// 		tail_sprite.size.x = 16;
+	// 		tail_sprite.top_left.y += 16;
+	// 		break;
+	// 	case 2:
+	// 		tail_pos.y -= 8;
+	// 		tail_sprite.top_left.x += 32;
+	// 		tail_sprite.size.y = 16;
+	// 		break;
+	// 	case 3:
+	// 		tail_sprite.size.x = 16;
+	// 		tail_sprite.top_left.y += 24;
+	// 		break;
+	// }
+	// whitgl_ivec tail_frame = {snake.t*3.9999, 0};
+	// whitgl_sys_draw_sprite(tail_sprite, tail_frame, tail_pos);
 }
