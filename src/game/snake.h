@@ -11,6 +11,7 @@ typedef struct
 	whitgl_ivec pos[MAX_SEGMENTS];
 	whitgl_int size;
 	whitgl_ivec old_pos;
+	whitgl_int dir;
 } game_snake;
 
 game_snake game_snake_zero();

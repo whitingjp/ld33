@@ -17,14 +17,23 @@ game_snake game_snake_zero()
 	snake.size = 16;
 	snake.t = 1;
 	snake.old_pos = snake.pos[snake.size-1];
+	snake.dir = 0;
 	return snake;
 }
 game_snake game_snake_update(game_snake snake)
 {
+	if(whitgl_input_pressed(WHITGL_INPUT_UP))
+		snake.dir = 0;
+	if(whitgl_input_pressed(WHITGL_INPUT_RIGHT))
+		snake.dir = 1;
+	if(whitgl_input_pressed(WHITGL_INPUT_DOWN))
+		snake.dir = 2;
+	if(whitgl_input_pressed(WHITGL_INPUT_LEFT))
+		snake.dir = 3;
 	whitgl_int i;
 	if(snake.t < 1)
 	{
-			snake.t = whitgl_fclamp(snake.t+1.0/4, 0, 1);
+		snake.t = whitgl_fclamp(snake.t+1.0/4, 0, 1);
 		return snake;
 	}
 	whitgl_ivec move = whitgl_ivec_zero;
@@ -37,7 +46,12 @@ game_snake game_snake_update(game_snake snake)
 	if(whitgl_input_down(WHITGL_INPUT_LEFT))
 		move.x--;
 	if(move.x != 0 && move.y != 0)
-		move.y = 0;
+	{
+		if(snake.dir % 2)
+			move.y = 0;
+		else
+			move.x = 0;
+	}
 	if(move.x == 0 && move.y == 0)
 		return snake;
 	whitgl_ivec new_pos = whitgl_ivec_add(snake.pos[0], move);
