@@ -18,6 +18,8 @@ game_snake game_snake_zero()
 	snake.size = 16;
 	snake.t = 0;
 	snake.dir = 3;
+	snake.reverse_cooloff = false;
+	snake.new_pos = snake.pos[0];
 	return snake;
 }
 
@@ -27,7 +29,10 @@ game_snake game_snake_update(game_snake snake)
 	whitgl_int dir = whitgl_fvec_to_facing(joy);
 	bool moving = joy.x != 0 || joy.y != 0;
 	if(!moving)
+	{
+		snake.reverse_cooloff = false;
 		return snake;
+	}
 	bool forward = true;
 	if(dir != snake.dir && snake.t < 0.5)
 		forward = false;
@@ -43,6 +48,17 @@ game_snake game_snake_update(game_snake snake)
 	}
 	if(snake.t == 0 || snake.t == 1)
 	{
+		if(!snake.reverse_cooloff && whitgl_iwrap(dir+2, 0, 4) == whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[0], snake.pos[1])))
+		{
+			game_snake new_snake = snake;
+			for(i=0; i<snake.size; i++)
+				new_snake.pos[i] = snake.pos[snake.size-1-i];
+			new_snake.dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-1], snake.pos[snake.size-2]));
+			new_snake.reverse_cooloff = true;
+			snake = new_snake;
+			// snake.new_pos = snake.pos[0];
+			snake.t = 1;
+		}
 		whitgl_ivec new_pos = whitgl_ivec_add(snake.pos[0], whitgl_facing_to_ivec(dir));
 		bool valid = true;
 		for(i=1; i<snake.size-1; i++)
@@ -52,7 +68,7 @@ game_snake game_snake_update(game_snake snake)
 		{
 			snake.new_pos = new_pos;
 			snake.dir = dir;
-			snake.t = 0.0;
+			snake.t = 0.1;
 		}
 	}
 	return snake;

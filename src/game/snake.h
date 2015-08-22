@@ -12,6 +12,7 @@ typedef struct
 	whitgl_int size;
 	whitgl_ivec new_pos;
 	whitgl_int dir;
+	whitgl_bool reverse_cooloff;
 } game_snake;
 
 game_snake game_snake_zero();
