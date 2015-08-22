@@ -9,6 +9,10 @@
 #include <whitgl/sys.h>
 #include <whitgl/timer.h>
 
+#include <game/game.h>
+
+#include <resource.h>
+
 int main(int argc, char** argv)
 {
 	WHITGL_LOG("Starting main.");
@@ -38,7 +42,7 @@ int main(int argc, char** argv)
 	whitgl_sound_init();
 	whitgl_input_init();
 
-	// whitgl_sys_add_image(0, "data/sprites.png");
+	resources_load();
 
 	whitgl_timer_init();
 
@@ -58,9 +62,7 @@ int main(int argc, char** argv)
 		}
 
 		whitgl_sys_draw_init();
-		whitgl_iaabb screen = {whitgl_ivec_zero, setup.size};
-		whitgl_sys_color background = {0x5a, 0x0f, 0x5f, 0xff};
-		whitgl_sys_draw_iaabb(screen, background);
+		game_draw(setup.size);
 		whitgl_sys_draw_finish();
 	}
 
