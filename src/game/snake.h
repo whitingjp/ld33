@@ -10,8 +10,10 @@ typedef struct
 	whitgl_float t;
 	whitgl_ivec pos[MAX_SEGMENTS];
 	whitgl_int size;
+	whitgl_ivec new_pos;
 	whitgl_ivec old_pos;
 	whitgl_int dir;
+	whitgl_int travel_dir;
 } game_snake;
 
 game_snake game_snake_zero();
