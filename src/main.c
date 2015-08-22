@@ -9,6 +9,7 @@
 #include <whitgl/sys.h>
 #include <whitgl/timer.h>
 
+#include <editor/editor.h>
 #include <game/game.h>
 #include <game/map.h>
 
@@ -63,6 +64,7 @@ int main(int argc, char** argv)
 		{
 			whitgl_input_update();
 			game = game_update(game, &map);
+			map = editor_update(map, setup.pixel_size);
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 				running = false;
 			if(whitgl_sys_should_close())
