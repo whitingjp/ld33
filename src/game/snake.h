@@ -3,6 +3,8 @@
 
 #include <whitgl/math.h>
 
+#include <game/map.h>
+
 #define MAX_SEGMENTS (16)
 
 typedef struct
@@ -16,7 +18,7 @@ typedef struct
 } game_snake;
 
 game_snake game_snake_zero();
-game_snake game_snake_update(game_snake snake);
+game_snake game_snake_update(game_snake snake, const game_map* map);
 void game_snake_draw(game_snake snake);
 
 #endif // GAME_SNAKE_

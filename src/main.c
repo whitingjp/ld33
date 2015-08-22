@@ -58,7 +58,7 @@ int main(int argc, char** argv)
 		while(whitgl_timer_should_do_frame(60))
 		{
 			whitgl_input_update();
-			game = game_update(game);
+			game = game_update(game, &map);
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 				running = false;
 			if(whitgl_sys_should_close())

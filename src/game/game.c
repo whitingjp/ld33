@@ -10,9 +10,9 @@ game_game game_game_zero()
 	return game;
 }
 
-game_game game_update(game_game game)
+game_game game_update(game_game game, const game_map* map)
 {
-	game.snake = game_snake_update(game.snake);
+	game.snake = game_snake_update(game.snake, map);
 	return game;
 }
 

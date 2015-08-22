@@ -23,7 +23,7 @@ game_snake game_snake_zero()
 	return snake;
 }
 
-game_snake game_snake_update(game_snake snake)
+game_snake game_snake_update(game_snake snake, const game_map* map)
 {
 	whitgl_fvec joy = whitgl_input_joystick();
 	whitgl_int dir = whitgl_fvec_to_facing(joy);
@@ -62,8 +62,12 @@ game_snake game_snake_update(game_snake snake)
 		whitgl_ivec new_pos = whitgl_ivec_add(snake.pos[0], whitgl_facing_to_ivec(dir));
 		bool valid = true;
 		for(i=1; i<snake.size-1; i++)
+		{
 			if(whitgl_ivec_eq(new_pos, snake.pos[i]))
 				valid = false;
+			if(game_map_get_tile(map, new_pos) == TILE_WALL)
+				valid = false;
+		}
 		if(valid)
 		{
 			snake.new_pos = new_pos;
