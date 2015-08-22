@@ -145,6 +145,12 @@ whitgl_ivec _game_snake_flags_to_frame(whitgl_int flags)
 	return frame;
 }
 
+#define VALID (true)
+#define INVALID (false)
+#define WIDE (true)
+#define NARR (false)
+#define HORI (true)
+#define VERT (false)
 typedef struct
 {
 	whitgl_bool valid;
@@ -153,6 +159,7 @@ typedef struct
 	whitgl_ivec sprite_offset;
 	whitgl_ivec draw_offset;
 } tail_data;
+const tail_data tail_data_zero = {INVALID, NARR, VERT, {0,0}, {0,0}};
 
 void game_snake_draw(game_snake snake)
 {
@@ -216,25 +223,25 @@ void game_snake_draw(game_snake snake)
 	whitgl_int iframe = snake.t*3.99;
 	frame = whitgl_ivec_zero;
 	WHITGL_LOG("in_dir %d out_dir %d frame %d", in_dir, out_dir, iframe);
-	tail_data tdata = {false, false, false, {0,0}, {0,0}};
+	tail_data tdata = tail_data_zero;
 	if(in_dir == 0 && out_dir == 0)
 	{
-		tail_data data = {true, false, true, {0,0}, {0,0}};
+		tail_data data = {VALID, NARR, HORI, {0,0}, {0,0}};
 		tdata = data;
 	}
 	if(in_dir == 1 && out_dir == 0)
 	{
-		tail_data data = {true, true, false, {48,64}, {-8,0}};
+		tail_data data = {VALID, WIDE, VERT, {48,64}, {-8,0}};
 		tdata = data;
 	}
 	if(in_dir == 1 && out_dir == 1)
 	{
-		tail_data data = {true, true, true, {0,16}, {-8,0}};
+		tail_data data = {VALID, WIDE, HORI, {0,16}, {-8,0}};
 		tdata = data;
 	}
 	if(in_dir == 0 && out_dir == 1)
 	{
-		tail_data data = {true, false, true, {0,32}, {0,0}};
+		tail_data data = {VALID, NARR, HORI, {0,32}, {0,0}};
 		tdata = data;
 	}
 
