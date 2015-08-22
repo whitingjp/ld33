@@ -20,6 +20,8 @@ game_snake game_snake_zero()
 	snake.dir = 3;
 	snake.do_reverse = false;
 	snake.new_pos = snake.pos[0];
+	snake.falling = false;
+	snake.fall_timer = 0;
 	return snake;
 }
 
@@ -30,6 +32,26 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	bool moving = joy.x != 0 || joy.y != 0;
 	if(whitgl_input_pressed(WHITGL_INPUT_A))
 		snake.do_reverse = true;
+
+	snake.falling = true;
+	whitgl_int i;
+	for(i=0 ;i<snake.size; i++)
+	{
+		whitgl_ivec test_pos = {snake.pos[i].x, snake.pos[i].y+1};
+		if(game_map_get_tile(map, test_pos) == TILE_WALL)
+			snake.falling = false;
+	}
+	if(game_map_get_tile(map, snake.new_pos) == TILE_WALL)
+		snake.falling = false;
+	if(snake.falling)
+	{
+		for(i=0 ;i<snake.size; i++)
+		{
+			snake.pos[i].y++;
+		}
+		snake.new_pos.y++;
+	}
+
 	if(!moving && !snake.do_reverse )
 	{
 		return snake;
@@ -40,7 +62,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	whitgl_float inc = forward ? 0.2 : -2;
 	whitgl_float old_snake_t = snake.t;
 	snake.t = whitgl_fclamp(snake.t+inc, 0, 1);
-	whitgl_int i;
+
 	if(old_snake_t <= 0.5 && snake.t > 0.5)
 	{
 		for(i=snake.size-1; i>0; i--)

@@ -15,6 +15,8 @@ typedef struct
 	whitgl_ivec new_pos;
 	whitgl_int dir;
 	whitgl_bool do_reverse;
+	whitgl_bool falling;
+	whitgl_float fall_timer;
 } game_snake;
 
 game_snake game_snake_zero();
