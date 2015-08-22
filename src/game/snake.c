@@ -51,9 +51,13 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	whitgl_int i;
 	for(i=0 ;i<snake.size; i++)
 	{
-		whitgl_ivec test_pos = {snake.pos[i].x, snake.pos[i].y+1};
-		if(game_map_get_tile(map, test_pos) == TILE_WALL)
-			snake.falling = false;
+		whitgl_int j;
+		for(j=0; j<4; j++)
+		{
+			whitgl_ivec test_pos = whitgl_ivec_add(snake.pos[i], whitgl_facing_to_ivec(j));
+			if(game_map_get_tile(map, test_pos) == TILE_WALL)
+				snake.falling = false;
+		}
 	}
 	if(game_map_get_tile(map, snake.new_pos) == TILE_WALL)
 		snake.falling = false;
