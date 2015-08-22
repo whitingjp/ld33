@@ -17,8 +17,7 @@ game_snake game_snake_zero()
 	}
 	snake.size = 16;
 	snake.t = 0;
-	snake.old_pos = snake.pos[snake.size-1];
-	snake.dir = 0;
+	snake.dir = 3;
 	return snake;
 }
 
@@ -32,7 +31,7 @@ game_snake game_snake_update(game_snake snake)
 	bool forward = true;
 	if(dir != snake.dir && snake.t < 0.5)
 		forward = false;
-	whitgl_float inc = forward ? 0.1 : -1;
+	whitgl_float inc = forward ? 0.2 : -2;
 	whitgl_float old_snake_t = snake.t;
 	snake.t = whitgl_fclamp(snake.t+inc, 0, 1);
 	whitgl_int i;
@@ -53,7 +52,7 @@ game_snake game_snake_update(game_snake snake)
 		{
 			snake.new_pos = new_pos;
 			snake.dir = dir;
-			snake.t = 0.2;
+			snake.t = 0.0;
 		}
 	}
 	return snake;
