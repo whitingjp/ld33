@@ -1,0 +1,6 @@
+build
+.ninja*
+build.ninja
+*.pyc
+input
+.DS_Store
