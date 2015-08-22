@@ -10,6 +10,7 @@
 #include <whitgl/timer.h>
 
 #include <game/game.h>
+#include <game/map.h>
 
 #include <resource.h>
 
@@ -44,6 +45,7 @@ int main(int argc, char** argv)
 
 	resources_load();
 	game_game game = game_game_zero();
+	game_map map = game_map_zero();
 
 	whitgl_timer_init();
 
@@ -64,7 +66,7 @@ int main(int argc, char** argv)
 		}
 
 		whitgl_sys_draw_init();
-		game_draw(game, setup.size);
+		game_draw(game, &map, setup.size);
 		whitgl_sys_draw_finish();
 	}
 
