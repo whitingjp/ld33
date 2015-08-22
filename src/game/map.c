@@ -17,6 +17,8 @@ game_map game_map_zero()
 				type = TILE_WALL;
 			if(i.y == 0 || i.y == MAP_HEIGHT-1)
 				type = TILE_WALL;
+			if(whitgl_randfloat() > 0.92)
+				type = TILE_WALL;
 			map.tiles[game_map_index_from_pos(i)] = type;
 		}
 	}

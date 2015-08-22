@@ -15,13 +15,14 @@ game_snake game_snake_zero()
 		whitgl_ivec pos = {i+3, 2};
 		snake.pos[i] = pos;
 	}
-	snake.size = 16;
+	snake.size = 6;
 	snake.t = 0;
 	snake.dir = 3;
 	snake.do_reverse = false;
 	snake.new_pos = snake.pos[0];
 	snake.falling = false;
 	snake.fall_timer = 0;
+	snake.fall_speed = 0;
 	return snake;
 }
 
@@ -63,7 +64,8 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		snake.falling = false;
 	if(snake.falling)
 	{
-		snake.fall_timer += 0.25;
+		snake.fall_speed = whitgl_fclamp(snake.fall_speed+0.05, 0, 0.5);
+		snake.fall_timer += snake.fall_speed;
 		if(snake.fall_timer > 0.5)
 		{
 			for(i=0 ;i<snake.size; i++)
@@ -76,6 +78,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	} else
 	{
 		snake.fall_timer = 0;
+		snake.fall_speed = 0;
 	}
 
 	if(!moving && !snake.do_reverse )

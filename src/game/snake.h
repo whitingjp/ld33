@@ -17,6 +17,7 @@ typedef struct
 	whitgl_bool do_reverse;
 	whitgl_bool falling;
 	whitgl_float fall_timer;
+	whitgl_float fall_speed;
 } game_snake;
 
 game_snake game_snake_zero();

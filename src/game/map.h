@@ -10,7 +10,7 @@ typedef enum
 } game_map_tile;
 
 #define MAP_WIDTH (20)
-#define MAP_HEIGHT (11)
+#define MAP_HEIGHT (13)
 #define NUM_TILES (MAP_WIDTH*MAP_HEIGHT)
 typedef struct
 {

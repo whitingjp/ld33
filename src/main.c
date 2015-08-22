@@ -44,6 +44,10 @@ int main(int argc, char** argv)
 	whitgl_input_init();
 
 	resources_load();
+
+	double now = whitgl_sys_get_time();
+	whitgl_randseed(now*10000);
+
 	game_game game = game_game_zero();
 	game_map map = game_map_zero();
 
