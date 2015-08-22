@@ -15,7 +15,7 @@ game_snake game_snake_zero(whitgl_ivec start)
 		whitgl_ivec pos = {start.x+i, start.y};
 		snake.pos[i] = pos;
 	}
-	snake.size = 3;
+	snake.size = 8;
 	snake.t = 0;
 	snake.dir = 3;
 	snake.do_reverse = false;
@@ -62,7 +62,8 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	}
 	if(game_map_get_tile(map, snake.new_pos) == TILE_WALL)
 		snake.falling = false;
-	if(snake.falling)
+	// if(snake.falling)
+	if(false)
 	{
 		snake.fall_speed = whitgl_fclamp(snake.fall_speed+0.05, 0, 0.5);
 		snake.fall_timer += snake.fall_speed;
@@ -90,12 +91,13 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		forward = false;
 	if(!_game_snake_move_valid(snake, snake.new_pos, map))
 		forward = false;
-	whitgl_float inc = forward ? 0.2 : -2;
+	whitgl_float inc = forward ? 0.05 : -2;
 	whitgl_float old_snake_t = snake.t;
 	snake.t = whitgl_fclamp(snake.t+inc, 0, 1);
 
 	if(old_snake_t <= 0.5 && snake.t > 0.5)
 	{
+		snake.old_pos = snake.pos[snake.size-1];
 		for(i=snake.size-1; i>0; i--)
 			snake.pos[i] = snake.pos[i-1];
 		snake.pos[0] = snake.new_pos;
@@ -143,6 +145,15 @@ whitgl_ivec _game_snake_flags_to_frame(whitgl_int flags)
 	return frame;
 }
 
+typedef struct
+{
+	whitgl_bool valid;
+	whitgl_bool wide;
+	whitgl_bool horizontal;
+	whitgl_ivec sprite_offset;
+	whitgl_ivec draw_offset;
+} tail_data;
+
 void game_snake_draw(game_snake snake)
 {
 	whitgl_sprite snake_sprite = {IMAGE_SPRITES, {0,0}, {8,8}};
@@ -184,32 +195,61 @@ void game_snake_draw(game_snake snake)
 	whitgl_ivec frame = _game_snake_flags_to_frame(whitgl_fpow(2, snake.dir));
 	whitgl_sys_draw_sprite(snake_sprite, frame, draw_pos);
 
-	t = snake.t;
-	whitgl_int in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-1],snake.pos[snake.size-2]));
-	whitgl_int out_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-2],snake.pos[snake.size-1]));
-	draw_pos = whitgl_ivec_scale(snake.pos[snake.size-1], snake_sprite.size);
+	whitgl_sprite tail_sprite = {IMAGE_SPRITES, {64,0}, {8,8}};
+	whitgl_int in_dir;
+	whitgl_int out_dir;
+
+	if(snake.t < 0.5)
+	{
+		draw_pos = whitgl_ivec_scale(snake.pos[snake.size-2], snake_sprite.size);
+		in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-2],snake.pos[snake.size-1]));
+		out_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-3],snake.pos[snake.size-2]));
+	}
+	else
+	{
+		draw_pos = whitgl_ivec_scale(snake.pos[snake.size-1], snake_sprite.size);
+
+		in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-1],snake.old_pos));
+		out_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-2],snake.pos[snake.size-1]));
+	}
 	draw_pos.y += snake.fall_timer*8;
-	if(t > 0.5)
+	whitgl_int iframe = snake.t*3.99;
+	frame = whitgl_ivec_zero;
+	WHITGL_LOG("in_dir %d out_dir %d frame %d", in_dir, out_dir, iframe);
+	tail_data tdata = {false, false, false, {0,0}, {0,0}};
+	if(in_dir == 0 && out_dir == 0)
 	{
-		whitgl_int underlay_flag = whitgl_fpow(2, in_dir) + whitgl_fpow(2, out_dir);
-		whitgl_ivec underlay_frame = _game_snake_flags_to_frame(underlay_flag);
-
-		whitgl_sys_draw_sprite(snake_sprite, underlay_frame, draw_pos);
+		tail_data data = {true, false, true, {0,0}, {0,0}};
+		tdata = data;
 	}
-	off = whitgl_facing_to_fvec(out_dir);
-	if(t > 0.5)
+	if(in_dir == 1 && out_dir == 0)
 	{
-		off = whitgl_fvec_inverse(off);
-		t = 1.0-t;
+		tail_data data = {true, true, false, {48,64}, {-8,0}};
+		tdata = data;
 	}
-	off = whitgl_fvec_scale(off, whitgl_ivec_to_fvec(snake_sprite.size));
-	off = whitgl_fvec_scale(off, whitgl_fvec_val(t));
-	draw_pos = whitgl_ivec_add(draw_pos, whitgl_fvec_to_ivec(off));
+	if(in_dir == 1 && out_dir == 1)
+	{
+		tail_data data = {true, true, true, {0,16}, {-8,0}};
+		tdata = data;
+	}
+	if(in_dir == 0 && out_dir == 1)
+	{
+		tail_data data = {true, false, true, {0,32}, {0,0}};
+		tdata = data;
+	}
 
+	if(tdata.wide)
+		tail_sprite.size.x *= 2;
+	else
+		tail_sprite.size.y *= 2;
+	if(tdata.horizontal)
+		frame.x = iframe;
+	else
+		frame.y = iframe;
+	tail_sprite.top_left = whitgl_ivec_add(tail_sprite.top_left, tdata.sprite_offset);
+	draw_pos = whitgl_ivec_add(draw_pos, tdata.draw_offset);
 
-	out_dir = whitgl_iwrap(out_dir+2, 0, 4);
-	frame = _game_snake_flags_to_frame(whitgl_fpow(2, out_dir));
-	frame.x += 4;
-	frame.y += 1;
-	whitgl_sys_draw_sprite(snake_sprite, frame, draw_pos);
+	if(tdata.valid)
+		whitgl_sys_draw_sprite(tail_sprite, frame, draw_pos);
+
 }

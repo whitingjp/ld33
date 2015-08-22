@@ -18,6 +18,8 @@ typedef struct
 	whitgl_bool falling;
 	whitgl_float fall_timer;
 	whitgl_float fall_speed;
+
+	whitgl_ivec old_pos;
 } game_snake;
 
 game_snake game_snake_zero(whitgl_ivec pos);
