@@ -43,6 +43,7 @@ int main(int argc, char** argv)
 	whitgl_input_init();
 
 	resources_load();
+	game_game game = game_game_zero();
 
 	whitgl_timer_init();
 
@@ -55,6 +56,7 @@ int main(int argc, char** argv)
 		while(whitgl_timer_should_do_frame(60))
 		{
 			whitgl_input_update();
+			game = game_update(game);
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 				running = false;
 			if(whitgl_sys_should_close())
@@ -62,7 +64,7 @@ int main(int argc, char** argv)
 		}
 
 		whitgl_sys_draw_init();
-		game_draw(setup.size);
+		game_draw(game, setup.size);
 		whitgl_sys_draw_finish();
 	}
 
