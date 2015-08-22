@@ -62,8 +62,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	}
 	if(game_map_get_tile(map, snake.new_pos) == TILE_WALL)
 		snake.falling = false;
-	// if(snake.falling)
-	if(false)
+	if(snake.falling)
 	{
 		snake.fall_speed = whitgl_fclamp(snake.fall_speed+0.05, 0, 0.5);
 		snake.fall_timer += snake.fall_speed;
@@ -91,7 +90,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		forward = false;
 	if(!_game_snake_move_valid(snake, snake.new_pos, map))
 		forward = false;
-	whitgl_float inc = forward ? 0.05 : -2;
+	whitgl_float inc = forward ? 1.0/8.0 : -1.0/4.0;
 	whitgl_float old_snake_t = snake.t;
 	snake.t = whitgl_fclamp(snake.t+inc, 0, 1);
 
