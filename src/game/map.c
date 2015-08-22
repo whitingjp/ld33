@@ -94,3 +94,21 @@ whitgl_int game_map_index_from_pos(whitgl_ivec v)
 {
 	return v.x + v.y*MAP_WIDTH;
 }
+
+whitgl_bool game_map_collide(const game_map* map, whitgl_faabb box)
+{
+	// whitgl_fvec scale = {8,8};
+	whitgl_iaabb bounds = whitgl_faabb_to_iaabb(box);
+	whitgl_ivec p;
+	for(p.x=bounds.a.x; p.x<=bounds.b.x; p.x++)
+	{
+		for(p.y=bounds.a.y; p.y<=bounds.b.y; p.y++)
+		{
+			whitgl_int i = game_map_index_from_pos(p);
+			if(map->tiles[i] == TILE_WALL)
+				return true;
+		}
+	}
+	return false;
+}
+

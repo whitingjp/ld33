@@ -8,7 +8,7 @@ typedef enum
 	TILE_EMPTY,
 	TILE_WALL,
 	TILE_SPAWN,
-	TILE_ENEMY,
+	TILE_WALKER,
 	TILE_MAX,
 } game_map_tile;
 
@@ -25,5 +25,6 @@ void game_map_draw(const game_map* map, whitgl_bool editor);
 game_map_tile game_map_get_tile(const game_map* map, whitgl_ivec pos);
 whitgl_ivec game_map_pos_from_index(whitgl_int i);
 whitgl_int game_map_index_from_pos(whitgl_ivec v);
+whitgl_bool game_map_collide(const game_map* map, whitgl_faabb box);
 
 #endif // GAME_MAP_

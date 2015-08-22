@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 	whitgl_sys_setup setup = whitgl_sys_setup_zero;
 	setup.size.x = 160;
 	setup.size.y = 90;
-	setup.pixel_size = 4;
+	setup.pixel_size = 5;
 	setup.name = "LD33";
 	setup.vsync = vsync;
 	setup.fullscreen = fullscreen;
