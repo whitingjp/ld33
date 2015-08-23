@@ -14,7 +14,7 @@ editor_editor editor_update(editor_editor editor, game_map* map, whitgl_int pixe
 	whitgl_int i;
 	if(whitgl_input_down(WHITGL_INPUT_A))
 	{
-		for(i=0; i<8; i++)
+		for(i=0; i<9; i++)
 			if(whitgl_input_down(WHITGL_INPUT_1+i))
 				map->decorations[index] = i;
 	} else
