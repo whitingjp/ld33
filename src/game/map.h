@@ -14,8 +14,10 @@ typedef enum
 	TILE_MAX,
 } game_map_tile;
 
-#define MAP_WIDTH (20)
-#define MAP_HEIGHT (11)
+#define SCREEN_W (20)
+#define SCREEN_H (11)
+#define MAP_WIDTH (SCREEN_W*8)
+#define MAP_HEIGHT (SCREEN_H*2)
 #define NUM_TILES (MAP_WIDTH*MAP_HEIGHT)
 typedef struct
 {
