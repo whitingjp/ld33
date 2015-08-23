@@ -3,6 +3,11 @@
 
 #include <game/map.h>
 
-game_map editor_update(game_map map, whitgl_int pixel_size);
+typedef struct
+{
+	whitgl_ivec camera;
+} editor_editor;
+static const editor_editor editor_editor_zero = {{0,0}};
+editor_editor editor_update(editor_editor editor, game_map* map, whitgl_int pixel_size);
 
 #endif // EDITOR_EDITOR_

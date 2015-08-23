@@ -56,6 +56,7 @@ int main(int argc, char** argv)
 	game_map map = game_map_zero();
 	whitgl_file_load("data/level.lvl", sizeof(game_map), (void*)&map);
 	game_game game = game_game_zero(&map);
+	editor_editor editor = editor_editor_zero;
 
 	whitgl_bool editing = false;
 
@@ -73,10 +74,11 @@ int main(int argc, char** argv)
 			if(can_edit && whitgl_input_pressed(WHITGL_INPUT_START))
 			{
 				editing = !editing;
+				editor.camera = game.camera;
 				game = game_game_zero(&map);
 			}
 			if(editing)
-				map = editor_update(map, setup.pixel_size);
+				editor = editor_update(editor, &map, setup.pixel_size);
 			else
 				game = game_update(game, &map, setup.size);
 
@@ -90,9 +92,10 @@ int main(int argc, char** argv)
 		whitgl_iaabb screen = {whitgl_ivec_zero, setup.size};
 		whitgl_sys_color background = {0x30, 0x2c, 0x4b, 0xff};
 		whitgl_sys_draw_iaabb(screen, background);
+		whitgl_ivec camera = editing ? editor.camera : game.camera;
 		if(!editing)
 			game_draw(game, &map);
-		game_map_draw(&map, editing, setup.size, game.camera);
+		game_map_draw(&map, editing, setup.size, camera);
 		if(!editing)
 			game_draw_over(game);
 		whitgl_sys_draw_finish();
