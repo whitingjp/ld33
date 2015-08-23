@@ -78,7 +78,7 @@ int main(int argc, char** argv)
 			if(editing)
 				map = editor_update(map, setup.pixel_size);
 			else
-				game = game_update(game, &map);
+				game = game_update(game, &map, setup.size);
 
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 				running = false;
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 		whitgl_sys_draw_iaabb(screen, background);
 		if(!editing)
 			game_draw(game, &map);
-		game_map_draw(&map, editing, setup.size);
+		game_map_draw(&map, editing, setup.size, game.camera);
 		if(!editing)
 			game_draw_over(game);
 		whitgl_sys_draw_finish();

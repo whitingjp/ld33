@@ -191,7 +191,7 @@ const snake_anim_data all_snake_data[16] =
 	{  VALID, WIDE, HORI, { 0,24}, { 0, 0}}, // 3, 3
 };
 
-void game_snake_draw(game_snake snake, const game_map* map)
+void game_snake_draw(game_snake snake, const game_map* map, whitgl_ivec camera)
 {
 	whitgl_sprite snake_sprite = {IMAGE_SPRITES, {0,0}, {8,8}};
 	whitgl_sprite sticky_sprite = {IMAGE_SPRITES, {32,40}, {8,8}};
@@ -201,6 +201,7 @@ void game_snake_draw(game_snake snake, const game_map* map)
 		if(snake.t < 0.5 && i==snake.size-2)
 			continue;
 		whitgl_ivec draw_pos = whitgl_ivec_scale(snake.pos[i], snake_sprite.size);
+		draw_pos = whitgl_ivec_add(draw_pos, camera);
 		whitgl_int flag = 0;
 		whitgl_int in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[i+1],snake.pos[i]));
 		whitgl_int out_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[i-1],snake.pos[i]));
@@ -245,6 +246,7 @@ void game_snake_draw(game_snake snake, const game_map* map)
 	whitgl_int head_data_index = head_in_dir+head_out_dir*4;
 
 	draw_pos.y += snake.fall_timer*8;
+	draw_pos = whitgl_ivec_add(draw_pos, camera);
 	whitgl_int iframe_head = (1-snake.t)*3.99;
 	frame = whitgl_ivec_zero;
 	snake_anim_data tdata_head = all_snake_data[head_data_index];
@@ -283,6 +285,7 @@ void game_snake_draw(game_snake snake, const game_map* map)
 	whitgl_int data_index = in_dir+out_dir*4;
 
 	draw_pos.y += snake.fall_timer*8;
+	draw_pos = whitgl_ivec_add(draw_pos, camera);
 	whitgl_int iframe = snake.t*3.99;
 	frame = whitgl_ivec_zero;
 	snake_anim_data tdata = all_snake_data[data_index];

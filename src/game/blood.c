@@ -29,11 +29,12 @@ game_blood game_blood_update(game_blood blood, const game_map* map)
 		blood.landed = true;
 	return blood;
 }
-void game_blood_draw(game_blood blood)
+void game_blood_draw(game_blood blood, whitgl_ivec camera)
 {
 	if(!blood.active)
 		return;
 	whitgl_sprite blood_sprite = {IMAGE_SPRITES,{32,16}, {8,8}};
 	whitgl_ivec draw_pos = whitgl_fvec_to_ivec(whitgl_fvec_scale(blood.pos, whitgl_fvec_val(8)));
+	draw_pos = whitgl_ivec_add(draw_pos, camera);
 	whitgl_sys_draw_sprite(blood_sprite, blood.frame, draw_pos);
 }

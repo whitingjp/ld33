@@ -15,10 +15,12 @@ typedef struct
 	game_walker walkers[NUM_WALKERS];
 	game_blood blood[NUM_BLOOD];
 	whitgl_int next_blood;
+	whitgl_fvec fcamera;
+	whitgl_ivec camera;
 } game_game;
 game_game game_game_zero(const game_map* map);
 
-game_game game_update(game_game game, const game_map* map);
+game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_size);
 void game_draw(game_game game, const game_map* map);
 void game_draw_over(game_game game);
 

@@ -23,10 +23,12 @@ game_game game_game_zero(const game_map* map)
 	}
 	game.snake = game_snake_zero(snake_spawn);
 	game.next_blood = 0;
+	game.camera = whitgl_ivec_zero;
+	game.fcamera = whitgl_fvec_zero;
 	return game;
 }
 
-game_game game_update(game_game game, const game_map* map)
+game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_size)
 {
 	game.snake = game_snake_update(game.snake, map);
 	whitgl_int i;
@@ -34,6 +36,18 @@ game_game game_update(game_game game, const game_map* map)
 		game.walkers[i] = game_walker_update(game.walkers[i], &game.snake, map);
 	for(i=0; i<NUM_BLOOD; i++)
 		game.blood[i] = game_blood_update(game.blood[i], map);
+
+	whitgl_fvec target = whitgl_fvec_zero;
+	for(i=0; i<game.snake.size; i++)
+		target = whitgl_fvec_add(target, whitgl_ivec_to_fvec(game.snake.pos[i]));
+	target = whitgl_fvec_divide(target, whitgl_fvec_val(game.snake.size));
+	whitgl_fvec screen = whitgl_fvec_divide(whitgl_ivec_to_fvec(screen_size), whitgl_fvec_val(8*2));
+	target = whitgl_fvec_sub(target, screen);
+	whitgl_faabb bounds = {whitgl_fvec_zero, {MAP_WIDTH-screen_size.x/8, MAP_HEIGHT-screen_size.y/8}};
+	target = whitgl_fvec_bound(target, bounds);
+	target = whitgl_fvec_scale(target, whitgl_fvec_val(8));
+	game.fcamera = whitgl_fvec_interpolate(game.fcamera, whitgl_fvec_inverse(target), 0.08);
+	game.camera = whitgl_fvec_to_ivec(game.fcamera);
 
 	for(i=0; i<NUM_WALKERS; i++)
 	{
@@ -73,10 +87,10 @@ game_game game_update(game_game game, const game_map* map)
 
 void game_draw(game_game game, const game_map* map)
 {
-	game_snake_draw(game.snake, map);
+	game_snake_draw(game.snake, map, game.camera);
 	whitgl_int i;
 	for(i=0; i<NUM_WALKERS; i++)
-		game_walker_draw(game.walkers[i]);
+		game_walker_draw(game.walkers[i], game.camera);
 
 	// for(i=0; i<NUM_WALKERS; i++)
 	// {
@@ -102,5 +116,5 @@ void game_draw_over(game_game game)
 {
 	whitgl_int i;
 	for(i=0; i<NUM_BLOOD; i++)
-		game_blood_draw(game.blood[i]);
+		game_blood_draw(game.blood[i], game.camera);
 }
