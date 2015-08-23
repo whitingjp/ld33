@@ -13,6 +13,7 @@
 #include <editor/editor.h>
 #include <game/game.h>
 #include <game/map.h>
+#include <endscreen.h>
 
 #include <resource.h>
 
@@ -85,6 +86,7 @@ int main(int argc, char** argv)
 	whitgl_file_load("data/level.lvl", sizeof(game_map), (void*)&map);
 	game_game game = game_game_zero(&map, setup.size);
 	editor_editor editor = editor_editor_zero;
+	end_screen endscreen = end_screen_zero;
 	whitgl_float music_volume = 0;
 	whitgl_float map_anim = 0;
 
@@ -111,10 +113,16 @@ int main(int argc, char** argv)
 			{
 				editor = editor_update(editor, &map, setup.pixel_size);
 			}
+			else if(endscreen.active)
+			{
+				endscreen = end_screen_update(endscreen);
+			}
 			else
 			{
 				game = game_update(game, &map, setup.size);
 				map_anim = whitgl_fwrap(map_anim+0.05, 0, 1);
+				if(game.snake.pos[0].x < 1)
+					endscreen = end_screen_init(100, 200);
 			}
 
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
@@ -137,6 +145,7 @@ int main(int argc, char** argv)
 		game_map_draw(&map, editing, setup.size, camera, map_anim);
 		if(!editing)
 			game_draw_over(game);
+		end_screen_draw(endscreen, setup.size);
 		whitgl_set_shader_uniform(WHITGL_SHADER_POST, 0, game.camera_shake);
 		whitgl_sys_draw_finish();
 	}
