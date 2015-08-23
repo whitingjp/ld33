@@ -58,6 +58,7 @@ int main(int argc, char** argv)
 	whitgl_file_load("data/level.lvl", sizeof(game_map), (void*)&map);
 	game_game game = game_game_zero(&map, setup.size);
 	editor_editor editor = editor_editor_zero;
+	whitgl_float music_volume = 0;
 
 	whitgl_bool editing = false;
 
@@ -87,6 +88,10 @@ int main(int argc, char** argv)
 				running = false;
 			if(whitgl_sys_should_close())
 				running = false;
+
+			if(!can_edit)
+				music_volume = whitgl_fclamp(music_volume+0.001, 0, 0.5);
+			whitgl_loop_volume(SOUND_MUSIC, music_volume);
 		}
 
 		whitgl_sys_draw_init();
