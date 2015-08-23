@@ -66,7 +66,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		snake.falling = false;
 	if(snake.falling)
 	{
-		snake.fall_speed = whitgl_fclamp(snake.fall_speed+0.05, 0, 0.5);
+		snake.fall_speed = whitgl_fclamp(snake.fall_speed+0.02, 0, 0.5);
 		snake.fall_timer += snake.fall_speed;
 		if(snake.fall_timer > 0.5)
 		{
