@@ -41,6 +41,7 @@ int main(int argc, char** argv)
 	setup.name = "LD33";
 	setup.vsync = vsync;
 	setup.fullscreen = fullscreen;
+	setup.cursor = can_edit ? CURSOR_SHOW : CURSOR_DISABLE;
 
 	if(!whitgl_sys_init(&setup))
 		return 1;
