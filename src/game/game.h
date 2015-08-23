@@ -6,7 +6,20 @@
 #include <game/map.h>
 #include <game/shot.h>
 #include <game/snake.h>
-#include <game/walker.h>
+
+typedef struct
+{
+	whitgl_bool active;
+	whitgl_fvec pos;
+	whitgl_float speed;
+	whitgl_float anim;
+	whitgl_float wait;
+	whitgl_bool will_shoot;
+	whitgl_bool shooting;
+	whitgl_int index;
+} game_walker;
+
+static const game_walker game_walker_zero = {false, {0,0}, 0.04, 0, 0, false, false, 0};
 
 #define NUM_WALKERS (128)
 #define NUM_BLOOD (1024)

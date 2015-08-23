@@ -2,6 +2,9 @@
 
 #include <whitgl/sound.h>
 #include <whitgl/sys.h>
+
+#include <game/walker.h>
+
 #include <resource.h>
 
 whitgl_fvec _game_camera_target(game_game game, whitgl_ivec screen_size)
@@ -39,7 +42,10 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 		if(map->tiles[i] == TILE_SPAWN)
 			snake_spawn = pos;
 		if(map->tiles[i] == TILE_WALKER)
-			game.walkers[num_walker++] = game_walker_spawn(pos);
+		{
+			game.walkers[num_walker] = game_walker_spawn(pos, num_walker);
+			num_walker++;
+		}
 	}
 	game.snake = game_snake_zero(snake_spawn);
 	game.fcamera = whitgl_fvec_inverse(_game_camera_target(game, screen_size));
@@ -65,7 +71,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 	game.snake = game_snake_update(game.snake, map);
 	whitgl_int i, j;
 	for(i=0; i<NUM_WALKERS; i++)
-		game.walkers[i] = game_walker_update(game.walkers[i], &game.snake, map);
+		game.walkers[i] = game_walker_update(game.walkers[i], &game, map);
 	for(i=0; i<NUM_BLOOD; i++)
 		game.blood[i] = game_blood_update(game.blood[i], map);
 	for(i=0; i<NUM_SHOTS; i++)

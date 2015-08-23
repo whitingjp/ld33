@@ -1,16 +1,18 @@
 #include "walker.h"
 
+#include <whitgl/logging.h>
 #include <whitgl/sys.h>
 #include <resource.h>
 
-game_walker game_walker_spawn(whitgl_ivec pos)
+game_walker game_walker_spawn(whitgl_ivec pos, whitgl_int index)
 {
 	game_walker walker = game_walker_zero;
 	walker.pos = whitgl_ivec_to_fvec(pos);
 	walker.active = true;
+	walker.index = index;
 	return walker;
 }
-game_walker game_walker_update(game_walker walker, const game_snake* snake, const game_map* map)
+game_walker game_walker_update(game_walker walker, const game_game* game, const game_map* map)
 {
 	if(!walker.active)
 		return walker;
@@ -39,17 +41,32 @@ game_walker game_walker_update(game_walker walker, const game_snake* snake, cons
 		walker.wait = 0.25;
 
 	whitgl_bool see_snake = false;
-	whitgl_int i;
+	whitgl_int i, j;
 	for(i=0; i<8; i++)
 	{
 		whitgl_fvec snake_off = {walker.speed > 0 ? i : -i, 0};
-		whitgl_faabb snake_check = whitgl_faabb_add(game_walker_collider(walker), snake_off);
-		if(game_snake_collide(*snake, snake_check))
+		whitgl_faabb check = whitgl_faabb_add(game_walker_collider(walker), snake_off);
+
+		whitgl_bool should_stop = false;
+		if(game_snake_collide(game->snake, check))
 		{
 			see_snake = true;
-			break;
+			should_stop = true;;
 		}
-		if(game_map_collide(map, snake_check))
+		if(game_map_collide(map, check))
+			should_stop = true;
+		for(j=0; j<NUM_WALKERS; j++)
+		{
+			if(game->walkers[j].index == walker.index)
+				continue;
+			if(!game->walkers[j].active)
+				continue;
+			whitgl_faabb other_check = game_walker_collider(game->walkers[j]);
+
+			if(whitgl_faabb_intersects(check, other_check))
+				should_stop = true;
+		}
+		if(should_stop)
 			break;
 	}
 	if(see_snake)
