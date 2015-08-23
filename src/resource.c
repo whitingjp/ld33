@@ -18,4 +18,11 @@ void resources_load()
 	whitgl_sound_add(SOUND_SLICK03, "data/sound/slick03.ogg");
 	whitgl_sound_add(SOUND_SLICK04, "data/sound/slick04.ogg");
 	whitgl_sound_add(SOUND_SLICK05, "data/sound/slick05.ogg");
+	whitgl_sound_add(SOUND_CHARGE, "data/sound/charge.ogg");
+	whitgl_sound_add(SOUND_HIT, "data/sound/hit.ogg");
+	whitgl_sound_add(SOUND_LASER, "data/sound/laser.ogg");
+	whitgl_sound_add(SOUND_HURT00, "data/sound/hurt00.ogg");
+	whitgl_sound_add(SOUND_HURT01, "data/sound/hurt01.ogg");
+	whitgl_sound_add(SOUND_HURT02, "data/sound/hurt02.ogg");
+	whitgl_sound_add(SOUND_HURT03, "data/sound/hurt03.ogg");
 }

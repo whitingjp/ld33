@@ -107,6 +107,8 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		if(game.snake.size > 3)
 			game.snake.size--;
 		game.snake.old_pos = game.snake.pos[game.snake.size];
+		// whitgl_sound_play(SOUND_HIT, whitgl_randfloat()*0.5+0.75);
+		whitgl_sound_play(SOUND_HURT00+whitgl_randint(4), whitgl_randfloat()*0.5+0.75);
 		game = _game_spawn_blood(game, game.shots[i].pos, game.shots[i].speed);
 	}
 
@@ -126,6 +128,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 				continue;
 			game.shots[j].active = false;
 			game.walkers[i].active = false;
+			whitgl_sound_play(SOUND_HIT, whitgl_randfloat()*0.5+0.75);
 			game = _game_spawn_blood(game, game.shots[j].pos, game.shots[j].speed);
 		}
 	}
@@ -138,6 +141,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			continue;
 		game.shots[game.next_shot] = game_shot_spawn(game.walkers[i].pos, game.walkers[i].speed < 0, i);
 		game.next_shot = whitgl_iwrap(game.next_shot+1, 0, NUM_SHOTS);
+		whitgl_sound_play(SOUND_LASER, whitgl_randfloat()*0.5+0.75);
 	}
 
 	if(whitgl_randfloat() > 1-game.snake.size*0.005)

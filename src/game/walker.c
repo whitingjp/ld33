@@ -1,6 +1,7 @@
 #include "walker.h"
 
 #include <whitgl/logging.h>
+#include <whitgl/sound.h>
 #include <whitgl/sys.h>
 #include <resource.h>
 
@@ -20,7 +21,10 @@ game_walker game_walker_update(game_walker walker, const game_game* game, const 
 
 	if(walker.wait > 0)
 	{
+		whitgl_float old_wait = walker.wait;
 		walker.wait = whitgl_fclamp(walker.wait-0.025, 0, 1);
+		if(walker.wait < 0.9 && old_wait >= 0.9 && walker.will_shoot)
+			whitgl_sound_play(SOUND_CHARGE, whitgl_randfloat()*0.5+0.75);
 		if(walker.wait == 0)
 		{
 			if(walker.will_shoot)
