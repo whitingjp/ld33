@@ -9,11 +9,10 @@
 
 whitgl_fvec _game_camera_target(game_game game, whitgl_ivec screen_size)
 {
-	whitgl_fvec target = whitgl_fvec_zero;
+	whitgl_fvec target = whitgl_ivec_to_fvec(game.snake.pos[game.snake.size-1]);
 	whitgl_int i;
-	for(i=0; i<game.snake.size; i++)
-		target = whitgl_fvec_add(target, whitgl_ivec_to_fvec(game.snake.pos[i]));
-	target = whitgl_fvec_divide(target, whitgl_fvec_val(game.snake.size));
+	for(i=game.snake.size-2; i>=0; i--)
+		target = whitgl_fvec_interpolate(target, whitgl_ivec_to_fvec(game.snake.pos[i]), 0.3);
 	whitgl_fvec screen = whitgl_fvec_divide(whitgl_ivec_to_fvec(screen_size), whitgl_fvec_val(8*2));
 	target = whitgl_fvec_sub(target, screen);
 	whitgl_faabb bounds = {whitgl_fvec_zero, {MAP_WIDTH-screen_size.x/8, MAP_HEIGHT-screen_size.y/8}};
