@@ -70,7 +70,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		if(game_map_get_tile(map, snake.pos[i]) == TILE_VINE)
 			snake.falling = false;
 	}
-	if(game_map_get_tile(map, snake.new_pos) == TILE_WALL)
+	if(game_map_get_tile(map, snake.new_pos) == TILE_WALL && _game_snake_move_valid(snake, snake.new_pos, map))
 		snake.falling = false;
 	if(snake.falling)
 	{
