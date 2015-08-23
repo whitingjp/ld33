@@ -11,7 +11,6 @@ typedef struct
 {
 	whitgl_float t;
 	whitgl_ivec pos[MAX_SEGMENTS];
-	whitgl_bool sticky[MAX_SEGMENTS];
 	whitgl_int size;
 	whitgl_ivec new_pos;
 	whitgl_int dir;

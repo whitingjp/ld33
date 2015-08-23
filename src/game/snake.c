@@ -10,12 +10,11 @@ game_snake game_snake_zero(whitgl_ivec start)
 {
 	game_snake snake;
 	whitgl_int i;
-	snake.size = 8;
+	snake.size = 3;
 	for(i=0; i<snake.size; i++)
 	{
 		whitgl_ivec pos = {start.x+i, start.y};
 		snake.pos[i] = pos;
-		snake.sticky[i] = false;
 	}
 	whitgl_ivec old_pos = {start.x+snake.size, start.y};
 	snake.old_pos = old_pos;
@@ -58,7 +57,6 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	whitgl_int i;
 	for(i=0 ;i<snake.size; i++)
 	{
-		snake.sticky[i] = false;
 		whitgl_int j;
 		for(j=0; j<4; j++)
 		{
@@ -66,13 +64,11 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 			if(j!=2 && (i==snake.size-1 || i==0))
 				continue;
 			if(game_map_get_tile(map, test_pos) == TILE_VINE_WALL)
-				snake.sticky[i] = true;
+				snake.falling = false;
 			if(j==2 && game_map_get_tile(map, test_pos) == TILE_WALL)
 				snake.falling = false;
 		}
 		if(game_map_get_tile(map, snake.pos[i]) == TILE_VINE)
-			snake.sticky[i] = true;
-		if(snake.sticky[i])
 			snake.falling = false;
 	}
 	if(game_map_get_tile(map, snake.new_pos) == TILE_WALL)
@@ -112,7 +108,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 	if(old_snake_t <= 0.5 && snake.t > 0.5)
 	{
 		snake.old_pos = snake.pos[snake.size-1];
-		for(i=snake.size-1; i>0; i--)
+		for(i=MAX_SEGMENTS-1; i>0; i--)
 			snake.pos[i] = snake.pos[i-1];
 		snake.pos[0] = snake.new_pos;
 	}
