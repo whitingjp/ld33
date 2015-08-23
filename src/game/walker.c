@@ -80,6 +80,6 @@ void game_walker_draw(game_walker walker, whitgl_ivec camera)
 }
 whitgl_faabb game_walker_collider(game_walker walker)
 {
-	whitgl_faabb box = {walker.pos, {walker.pos.x+1, walker.pos.y+0.5}};
+	whitgl_faabb box = {walker.pos, {walker.pos.x+1, walker.pos.y+0.8}};
 	return box;
 }

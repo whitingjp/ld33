@@ -3,7 +3,7 @@
 #include <whitgl/sys.h>
 #include <resource.h>
 
-game_shot game_shot_spawn(whitgl_fvec pos, whitgl_bool facing_left)
+game_shot game_shot_spawn(whitgl_fvec pos, whitgl_bool facing_left, whitgl_int owner)
 {
 	game_shot shot;
 	shot.active = true;
@@ -11,6 +11,7 @@ game_shot game_shot_spawn(whitgl_fvec pos, whitgl_bool facing_left)
 	shot.speed = whitgl_fvec_zero;
 	shot.speed.x = facing_left ? -1 : 1;
 	shot.speed.x *= 0.2;
+	shot.owner = owner;
 	return shot;
 }
 game_shot game_shot_update(game_shot shot, const game_map* map)

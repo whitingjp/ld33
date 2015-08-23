@@ -63,7 +63,7 @@ game_game _game_spawn_blood(game_game game, whitgl_fvec pos, whitgl_fvec speed)
 game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_size)
 {
 	game.snake = game_snake_update(game.snake, map);
-	whitgl_int i;
+	whitgl_int i, j;
 	for(i=0; i<NUM_WALKERS; i++)
 		game.walkers[i] = game_walker_update(game.walkers[i], &game.snake, map);
 	for(i=0; i<NUM_BLOOD; i++)
@@ -80,15 +80,14 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		if(!game.walkers[i].active)
 			continue;
 		whitgl_faabb walk_col = game_walker_collider(game.walkers[i]);
-		if(game_snake_collide(game.snake, walk_col))
-		{
-			game.walkers[i].active = false;
-			game.snake.size++;
-			game.snake.old_pos = game.snake.pos[game.snake.size];
-			whitgl_sound_play(SOUND_SPLAT00+whitgl_randint(6), whitgl_randfloat()/5+0.9);
-			whitgl_fvec speed = whitgl_fvec_scale(whitgl_facing_to_fvec(game.snake.dir), whitgl_fvec_val(0.3));
-			game = _game_spawn_blood(game, game.walkers[i].pos, speed);
-		}
+		if(!game_snake_collide(game.snake, walk_col))
+			continue;
+		game.walkers[i].active = false;
+		game.snake.size++;
+		game.snake.old_pos = game.snake.pos[game.snake.size];
+		whitgl_sound_play(SOUND_SPLAT00+whitgl_randint(6), whitgl_randfloat()/5+0.9);
+		whitgl_fvec speed = whitgl_fvec_scale(whitgl_facing_to_fvec(game.snake.dir), whitgl_fvec_val(0.3));
+		game = _game_spawn_blood(game, game.walkers[i].pos, speed);
 	}
 
 	for(i=0; i<NUM_SHOTS; i++)
@@ -96,13 +95,32 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		if(!game.shots[i].active)
 			continue;
 		whitgl_faabb shot_col = game_shot_collider(game.shots[i]);
-		if(game_snake_collide(game.snake, shot_col))
+		if(!game_snake_collide(game.snake, shot_col))
+			continue;
+		game.shots[i].active = false;
+		if(game.snake.size > 3)
+			game.snake.size--;
+		game.snake.old_pos = game.snake.pos[game.snake.size];
+		game = _game_spawn_blood(game, game.shots[i].pos, game.shots[i].speed);
+	}
+
+	for(i=0; i<NUM_WALKERS; i++)
+	{
+		if(!game.walkers[i].active)
+			continue;
+		for(j=0; j<NUM_SHOTS; j++)
 		{
-			game.shots[i].active = false;
-			if(game.snake.size > 3)
-				game.snake.size--;
-			game.snake.old_pos = game.snake.pos[game.snake.size];
-			game = _game_spawn_blood(game, game.shots[i].pos, game.shots[i].speed);
+			if(!game.shots[j].active)
+				continue;
+			if(game.shots[j].owner == i)
+				continue;
+			whitgl_faabb shot_col = game_shot_collider(game.shots[j]);
+			whitgl_faabb walk_col = game_walker_collider(game.walkers[i]);
+			if(!whitgl_faabb_intersects(shot_col, walk_col))
+				continue;
+			game.shots[j].active = false;
+			game.walkers[i].active = false;
+			game = _game_spawn_blood(game, game.shots[j].pos, game.shots[j].speed);
 		}
 	}
 
@@ -112,7 +130,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			continue;
 		if(!game.walkers[i].shooting)
 			continue;
-		game.shots[game.next_shot] = game_shot_spawn(game.walkers[i].pos, game.walkers[i].speed < 0);
+		game.shots[game.next_shot] = game_shot_spawn(game.walkers[i].pos, game.walkers[i].speed < 0, i);
 		game.next_shot = whitgl_iwrap(game.next_shot+1, 0, NUM_SHOTS);
 	}
 
