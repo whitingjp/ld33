@@ -16,6 +16,25 @@
 
 #include <resource.h>
 
+const char* post_src = "\
+#version 150\
+\n\
+in vec2 Texturepos;\
+out vec4 outColor;\
+uniform sampler2D tex;\
+uniform float overdrive;\
+float rand(vec2 co){\
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);\
+}\
+void main()\
+{\
+	float offsetx = (rand( Texturepos )-0.5)*(overdrive);\
+	float offsety = (rand( Texturepos.yx )-0.5)*(overdrive);\
+	outColor = texture( tex, Texturepos+vec2(offsetx/200,offsety/200) );\
+	outColor = outColor*(1+overdrive*2);\
+}\
+";
+
 int main(int argc, char** argv)
 {
 	WHITGL_LOG("Starting main.");
@@ -43,7 +62,15 @@ int main(int argc, char** argv)
 	setup.fullscreen = fullscreen;
 	setup.cursor = can_edit ? CURSOR_SHOW : CURSOR_DISABLE;
 
+
 	if(!whitgl_sys_init(&setup))
+		return 1;
+
+	whitgl_shader post_shader = whitgl_shader_zero;
+	post_shader.fragment_src = post_src;
+	post_shader.num_uniforms = 1;
+	post_shader.uniforms[0] = "overdrive";
+	if(!whitgl_change_shader(WHITGL_SHADER_POST, post_shader))
 		return 1;
 
 	whitgl_sound_init();
@@ -104,6 +131,7 @@ int main(int argc, char** argv)
 		game_map_draw(&map, editing, setup.size, camera);
 		if(!editing)
 			game_draw_over(game);
+		whitgl_set_shader_uniform(WHITGL_SHADER_POST, 0, game.camera_shake);
 		whitgl_sys_draw_finish();
 	}
 
