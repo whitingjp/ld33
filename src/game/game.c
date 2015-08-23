@@ -85,6 +85,20 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		}
 	}
 
+	for(i=0; i<NUM_SHOTS; i++)
+	{
+		if(!game.shots[i].active)
+			continue;
+		whitgl_faabb shot_col = game_shot_collider(game.shots[i]);
+		if(game_snake_collide(game.snake, shot_col))
+		{
+			game.shots[i].active = false;
+			if(game.snake.size > 3)
+				game.snake.size--;
+			game.snake.old_pos = game.snake.pos[game.snake.size];
+		}
+	}
+
 	for(i=0; i<NUM_WALKERS; i++)
 	{
 		if(!game.walkers[i].active)
