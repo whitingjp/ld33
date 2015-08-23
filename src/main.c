@@ -86,6 +86,7 @@ int main(int argc, char** argv)
 	game_game game = game_game_zero(&map, setup.size);
 	editor_editor editor = editor_editor_zero;
 	whitgl_float music_volume = 0;
+	whitgl_float map_anim = 0;
 
 	whitgl_bool editing = false;
 
@@ -110,6 +111,7 @@ int main(int argc, char** argv)
 				editor = editor_update(editor, &map, setup.pixel_size);
 			else
 				game = game_update(game, &map, setup.size);
+			map_anim = whitgl_fwrap(map_anim+0.05, 0, 1);
 
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 				running = false;
@@ -128,7 +130,7 @@ int main(int argc, char** argv)
 		whitgl_ivec camera = editing ? editor.camera : game.camera;
 		if(!editing)
 			game_draw(game);
-		game_map_draw(&map, editing, setup.size, camera);
+		game_map_draw(&map, editing, setup.size, camera, map_anim);
 		if(!editing)
 			game_draw_over(game);
 		whitgl_set_shader_uniform(WHITGL_SHADER_POST, 0, game.camera_shake);

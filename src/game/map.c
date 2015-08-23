@@ -29,7 +29,7 @@ whitgl_iaabb _world_bounds(whitgl_ivec pos, whitgl_ivec sprite_size, whitgl_ivec
 	return bounds;
 }
 
-void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_size, whitgl_ivec camera)
+void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_size, whitgl_ivec camera, whitgl_float map_anim)
 {
 	whitgl_sprite map_sprite = {IMAGE_SPRITES, {0,32}, {8,8}};
 	whitgl_ivec i;
@@ -70,6 +70,12 @@ void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_s
 			if(tile == TILE_PLATFORM)
 			{
 				whitgl_sys_draw_sprite(map_sprite, platform_frame, draw_pos);
+				continue;
+			}
+			whitgl_ivec beam_frame = {4+map_anim*3.99,2};
+			if(tile == TILE_BEAM)
+			{
+				whitgl_sys_draw_sprite(map_sprite, beam_frame, draw_pos);
 				continue;
 			}
 

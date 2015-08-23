@@ -40,6 +40,8 @@ whitgl_bool _game_snake_move_valid(game_snake snake, whitgl_ivec pos, const game
 			valid = false;
 		if(game_map_get_tile(map, pos) == TILE_WALL)
 			valid = false;
+		if(game_map_get_tile(map, pos) == TILE_BEAM)
+			valid = false;
 	}
 	return valid;
 }

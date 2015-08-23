@@ -9,6 +9,7 @@ typedef enum
 	TILE_WALL,
 	TILE_VINE,
 	TILE_PLATFORM,
+	TILE_BEAM,
 	TILE_SPAWN,
 	TILE_WALKER,
 	TILE_PICKUP,
@@ -28,7 +29,7 @@ typedef struct
 } game_map;
 
 game_map game_map_zero();
-void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_size, whitgl_ivec camera);
+void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_size, whitgl_ivec camera, whitgl_float map_anim);
 game_map_tile game_map_get_tile(const game_map* map, whitgl_ivec pos);
 char game_map_get_decoration(const game_map* map, whitgl_ivec pos);
 whitgl_ivec game_map_pos_from_index(whitgl_int i);
