@@ -117,6 +117,16 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		if(!game.shots[i].active)
 			continue;
 		whitgl_faabb shot_col = game_shot_collider(game.shots[i]);
+		if(!game_map_collide(map, shot_col, false))
+			continue;
+		game.shots[i].active = false;
+	}
+
+	for(i=0; i<NUM_SHOTS; i++)
+	{
+		if(!game.shots[i].active)
+			continue;
+		whitgl_faabb shot_col = game_shot_collider(game.shots[i]);
 		if(!game_snake_collide(game.snake, shot_col))
 			continue;
 		game.shots[i].active = false;
