@@ -66,6 +66,12 @@ void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_s
 				whitgl_sys_draw_sprite(map_sprite, vine_frame, draw_pos);
 				continue;
 			}
+			whitgl_ivec platform_frame = {5,0};
+			if(tile == TILE_PLATFORM)
+			{
+				whitgl_sys_draw_sprite(map_sprite, platform_frame, draw_pos);
+				continue;
+			}
 
 			whitgl_int flags = 0;
 			whitgl_int j;
@@ -97,8 +103,6 @@ void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_s
 				case 15: frame.x = 1; frame.y = 2; break;
 			}
 			whitgl_sys_draw_sprite(map_sprite, frame, draw_pos);
-			if(tile == TILE_VINE_WALL)
-				whitgl_sys_draw_sprite(map_sprite, vine_frame, draw_pos);
 		}
 	}
 }
@@ -138,7 +142,7 @@ whitgl_int game_map_index_from_pos(whitgl_ivec v)
 	return v.x + v.y*MAP_WIDTH;
 }
 
-whitgl_bool game_map_collide(const game_map* map, whitgl_faabb box)
+whitgl_bool game_map_collide(const game_map* map, whitgl_faabb box, bool count_platforms)
 {
 	// whitgl_fvec scale = {8,8};
 	whitgl_iaabb bounds = whitgl_faabb_to_iaabb(box);
@@ -149,6 +153,8 @@ whitgl_bool game_map_collide(const game_map* map, whitgl_faabb box)
 		{
 			whitgl_int i = game_map_index_from_pos(p);
 			if(map->tiles[i] == TILE_WALL)
+				return true;
+			if(count_platforms && map->tiles[i] == TILE_PLATFORM)
 				return true;
 		}
 	}
