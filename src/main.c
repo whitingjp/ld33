@@ -88,7 +88,7 @@ int main(int argc, char** argv)
 
 		whitgl_sys_draw_init();
 		whitgl_iaabb screen = {whitgl_ivec_zero, setup.size};
-		whitgl_sys_color background = {0x5a, 0x0f, 0x5f, 0xff};
+		whitgl_sys_color background = {0x30, 0x2c, 0x4b, 0xff};
 		whitgl_sys_draw_iaabb(screen, background);
 		if(!editing)
 			game_draw(game, &map);
