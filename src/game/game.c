@@ -96,6 +96,15 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			if(game.snake.size > 3)
 				game.snake.size--;
 			game.snake.old_pos = game.snake.pos[game.snake.size];
+			whitgl_int j;
+			for(j=0; j<24; j++)
+			{
+				whitgl_fvec spawn_point = {game.shots[i].pos.x+0.5,game.shots[i].pos.y+0.5};
+				whitgl_fvec speed = game.shots[i].speed;
+				speed.y -= 0.5;
+				game.blood[game.next_blood] = game_blood_spawn(spawn_point, speed);
+				game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
+			}
 		}
 	}
 
