@@ -32,11 +32,22 @@ void game_map_draw(const game_map* map, whitgl_bool editor)
 		{
 			game_map_tile tile = game_map_get_tile(map, i);
 			whitgl_ivec draw_pos = whitgl_ivec_scale(i, map_sprite.size);
-			if(tile != TILE_WALL)
+
+			if(tile == TILE_EMPTY)
 			{
-				whitgl_ivec frame = {tile, 4};
+				continue;
+			}
+			if(tile >= TILE_SPAWN)
+			{
+				whitgl_ivec frame = {tile-TILE_SPAWN, 4};
 				if(editor)
 					whitgl_sys_draw_sprite(map_sprite, frame, draw_pos);
+				continue;
+			}
+			whitgl_ivec vine_frame = {4,1};
+			if(tile == TILE_VINE)
+			{
+				whitgl_sys_draw_sprite(map_sprite, vine_frame, draw_pos);
 				continue;
 			}
 
@@ -45,7 +56,8 @@ void game_map_draw(const game_map* map, whitgl_bool editor)
 			for(j=0; j<4; j++)
 			{
 				whitgl_ivec test_pos = whitgl_ivec_add(i, whitgl_facing_to_ivec(j));
-				if(game_map_get_tile(map, test_pos) == TILE_WALL)
+				game_map_tile tile = game_map_get_tile(map, test_pos);
+				if(tile == TILE_WALL || tile == TILE_VINE_WALL)
 					flags |= (whitgl_int)whitgl_fpow(2, j);
 			}
 			whitgl_ivec frame = whitgl_ivec_zero;
@@ -69,6 +81,8 @@ void game_map_draw(const game_map* map, whitgl_bool editor)
 				case 15: frame.x = 1; frame.y = 2; break;
 			}
 			whitgl_sys_draw_sprite(map_sprite, frame, draw_pos);
+			if(tile == TILE_VINE_WALL)
+				whitgl_sys_draw_sprite(map_sprite, vine_frame, draw_pos);
 		}
 	}
 }
