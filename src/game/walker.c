@@ -22,7 +22,7 @@ game_walker game_walker_update(game_walker walker, const game_game* game, const 
 	if(walker.wait > 0)
 	{
 		whitgl_float old_wait = walker.wait;
-		walker.wait = whitgl_fclamp(walker.wait-0.025, 0, 1);
+		walker.wait = whitgl_fclamp(walker.wait-0.02, 0, 1);
 		if(walker.wait < 0.9 && old_wait >= 0.9 && walker.will_shoot)
 			whitgl_sound_play(SOUND_CHARGE, whitgl_randfloat()*0.5+0.75);
 		if(walker.wait == 0)
@@ -46,7 +46,7 @@ game_walker game_walker_update(game_walker walker, const game_game* game, const 
 
 	whitgl_bool see_snake = false;
 	whitgl_int i, j;
-	for(i=0; i<12; i++)
+	for(i=0; i<10; i++)
 	{
 		whitgl_fvec snake_off = {walker.speed > 0 ? i : -i, 0};
 		whitgl_faabb check = whitgl_faabb_add(game_walker_collider(walker), snake_off);
