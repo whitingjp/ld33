@@ -56,6 +56,8 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		for(j=0; j<4; j++)
 		{
 			whitgl_ivec test_pos = whitgl_ivec_add(snake.pos[i], whitgl_facing_to_ivec(j));
+			if(j!=2 && i==snake.size-1)
+				continue;
 			if(game_map_get_tile(map, test_pos) == TILE_WALL)
 				snake.falling = false;
 		}
@@ -166,6 +168,8 @@ void game_snake_draw(game_snake snake)
 	whitgl_int i;
 	for(i=1; i<snake.size-1; i++)
 	{
+		if(snake.t < 0.5 && i==snake.size-2)
+			continue;
 		whitgl_ivec draw_pos = whitgl_ivec_scale(snake.pos[i], snake_sprite.size);
 		whitgl_int flag = 0;
 		whitgl_int in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[i+1],snake.pos[i]));
@@ -179,7 +183,7 @@ void game_snake_draw(game_snake snake)
 	whitgl_float t = snake.t;
 	whitgl_ivec draw_pos = whitgl_ivec_scale(snake.pos[0], snake_sprite.size);
 	draw_pos.y += snake.fall_timer*8;
-	if(t <= 0.5)
+	if(t < 0.5)
 	{
 		whitgl_int in_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[1],snake.pos[0]));
 		whitgl_int out_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.new_pos,snake.pos[0]));
