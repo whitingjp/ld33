@@ -47,6 +47,19 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 	return game;
 }
 
+game_game _game_spawn_blood(game_game game, whitgl_fvec pos, whitgl_fvec speed)
+{
+	whitgl_int j;
+	for(j=0; j<24; j++)
+	{
+		whitgl_fvec spawn_point = {pos.x+0.5,pos.y+0.5};
+		speed.y -= 0.1;
+		game.blood[game.next_blood] = game_blood_spawn(spawn_point, speed);
+		game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
+	}
+	return game;
+}
+
 game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_size)
 {
 	game.snake = game_snake_update(game.snake, map);
@@ -73,15 +86,8 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			game.snake.size++;
 			game.snake.old_pos = game.snake.pos[game.snake.size];
 			whitgl_sound_play(SOUND_SPLAT00+whitgl_randint(6), whitgl_randfloat()/5+0.9);
-			whitgl_int j;
-			for(j=0; j<24; j++)
-			{
-				whitgl_fvec spawn_point = {game.walkers[i].pos.x+0.5,game.walkers[i].pos.y+0.5};
-				whitgl_fvec speed = whitgl_fvec_scale(whitgl_facing_to_fvec(game.snake.dir), whitgl_fvec_val(0.3));
-				speed.y -= 0.5;
-				game.blood[game.next_blood] = game_blood_spawn(spawn_point, speed);
-				game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
-			}
+			whitgl_fvec speed = whitgl_fvec_scale(whitgl_facing_to_fvec(game.snake.dir), whitgl_fvec_val(0.3));
+			game = _game_spawn_blood(game, game.walkers[i].pos, speed);
 		}
 	}
 
@@ -96,15 +102,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			if(game.snake.size > 3)
 				game.snake.size--;
 			game.snake.old_pos = game.snake.pos[game.snake.size];
-			whitgl_int j;
-			for(j=0; j<24; j++)
-			{
-				whitgl_fvec spawn_point = {game.shots[i].pos.x+0.5,game.shots[i].pos.y+0.5};
-				whitgl_fvec speed = game.shots[i].speed;
-				speed.y -= 0.5;
-				game.blood[game.next_blood] = game_blood_spawn(spawn_point, speed);
-				game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
-			}
+			game = _game_spawn_blood(game, game.shots[i].pos, game.shots[i].speed);
 		}
 	}
 
