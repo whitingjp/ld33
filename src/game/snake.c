@@ -10,17 +10,20 @@ game_snake game_snake_zero(whitgl_ivec start)
 {
 	game_snake snake;
 	whitgl_int i;
-	for(i=0; i<MAX_SEGMENTS; i++)
+	snake.size = 8;
+	for(i=0; i<snake.size; i++)
 	{
 		whitgl_ivec pos = {start.x+i, start.y};
 		snake.pos[i] = pos;
 		snake.sticky[i] = false;
 	}
-	snake.size = 8;
-	snake.t = 0;
+	whitgl_ivec old_pos = {start.x+snake.size, start.y};
+	snake.old_pos = old_pos;
+	snake.t = 0.4;
 	snake.dir = 3;
 	snake.do_reverse = false;
-	snake.new_pos = snake.pos[0];
+	whitgl_ivec new_pos = {start.x-1, start.y};
+	snake.new_pos = new_pos;
 	snake.falling = false;
 	snake.fall_timer = 0;
 	snake.fall_speed = 0;
