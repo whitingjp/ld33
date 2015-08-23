@@ -119,7 +119,7 @@ whitgl_bool game_map_collide(const game_map* map, whitgl_faabb box)
 		for(p.y=bounds.a.y; p.y<=bounds.b.y; p.y++)
 		{
 			whitgl_int i = game_map_index_from_pos(p);
-			if(map->tiles[i] == TILE_WALL)
+			if(map->tiles[i] == TILE_WALL || map->tiles[i] == TILE_VINE_WALL)
 				return true;
 		}
 	}

@@ -14,12 +14,25 @@ game_walker game_walker_update(game_walker walker, const game_map* map)
 {
 	if(!walker.active)
 		return walker;
+	if(walker.wait > 0)
+	{
+		walker.wait = whitgl_fclamp(walker.wait-0.025, 0, 1);
+		if(walker.wait == 0)
+			walker.speed *= -1;
+		return walker;
+	}
 
 	walker.pos.x += walker.speed;
 	whitgl_faabb box = {walker.pos, {walker.pos.x+1, walker.pos.y+0.5}};
 	whitgl_bool collided = game_map_collide(map, box);
 	if(collided)
-		walker.speed *= -1;
+		walker.wait = 0.25;
+
+	whitgl_fvec floor_off = {walker.speed > 0 ? 1 : -1, 1};
+	whitgl_faabb floor_box = whitgl_faabb_add(box, floor_off);
+	whitgl_bool is_floor = game_map_collide(map, floor_box);
+	if(!is_floor)
+		walker.wait = 1;
 	walker.anim = whitgl_fwrap(walker.anim+0.05, 0, 1);
 	return walker;
 }
