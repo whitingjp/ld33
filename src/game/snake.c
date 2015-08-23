@@ -131,7 +131,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 			new_snake.old_pos = snake.new_pos;
 			new_snake.new_pos = snake.old_pos;
 			snake = new_snake;
-
+			whitgl_sound_play(SOUND_SWAP, whitgl_randfloat()*0.5+0.75);
 			snake.t = 1;
 		}
 		whitgl_ivec new_pos = whitgl_ivec_add(snake.pos[0], whitgl_facing_to_ivec(dir));

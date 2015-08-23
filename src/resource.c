@@ -27,5 +27,6 @@ void resources_load()
 	whitgl_sound_add(SOUND_HURT03, "data/sound/hurt03.ogg");
 	whitgl_sound_add(SOUND_PLING, "data/sound/pling.ogg");
 	whitgl_sound_add(SOUND_GLANCE, "data/sound/glance.ogg");
+	whitgl_sound_add(SOUND_SWAP, "data/sound/swap.ogg");
 	whitgl_loop_add(SOUND_MUSIC, "data/sound/bloodworm.ogg");
 }
