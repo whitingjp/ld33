@@ -29,6 +29,10 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 		game.walkers[i] = game_walker_zero;
 	for(i=0; i<NUM_BLOOD; i++)
 		game.blood[i] = game_blood_zero;
+	game.next_blood = 0;
+	for(i=0; i<NUM_SHOTS; i++)
+		game.shots[i] = game_shot_zero;
+	game.next_shot = 0;
 	for(i=0; i<NUM_TILES; i++)
 	{
 		whitgl_ivec pos = game_map_pos_from_index(i);
@@ -38,7 +42,6 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 			game.walkers[num_walker++] = game_walker_spawn(pos);
 	}
 	game.snake = game_snake_zero(snake_spawn);
-	game.next_blood = 0;
 	game.fcamera = whitgl_fvec_inverse(_game_camera_target(game, screen_size));
 	game.camera = whitgl_fvec_to_ivec(game.fcamera);
 	return game;
@@ -52,6 +55,8 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		game.walkers[i] = game_walker_update(game.walkers[i], &game.snake, map);
 	for(i=0; i<NUM_BLOOD; i++)
 		game.blood[i] = game_blood_update(game.blood[i], map);
+	for(i=0; i<NUM_SHOTS; i++)
+		game.shots[i] = game_shot_update(game.shots[i], map);
 
 	whitgl_fvec target = _game_camera_target(game, screen_size);
 	game.fcamera = whitgl_fvec_interpolate(game.fcamera, whitgl_fvec_inverse(target), 0.08);
@@ -77,6 +82,17 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 				game.blood[game.next_blood] = game_blood_spawn(spawn_point, speed);
 				game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
 			}
+		}
+	}
+
+	for(i=0; i<NUM_WALKERS; i++)
+	{
+		if(!game.walkers[i].active)
+			continue;
+		if(whitgl_randfloat() > 0.99)
+		{
+			game.shots[game.next_shot] = game_shot_spawn(game.walkers[i].pos, game.walkers[i].speed < 0);
+			game.next_shot = whitgl_iwrap(game.next_shot+1, 0, NUM_SHOTS);
 		}
 	}
 
@@ -125,4 +141,6 @@ void game_draw_over(game_game game)
 	whitgl_int i;
 	for(i=0; i<NUM_BLOOD; i++)
 		game_blood_draw(game.blood[i], game.camera);
+	for(i=0; i<NUM_SHOTS; i++)
+		game_shot_draw(game.shots[i], game.camera);
 }

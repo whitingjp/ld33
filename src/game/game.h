@@ -4,17 +4,21 @@
 #include <whitgl/math.h>
 #include <game/blood.h>
 #include <game/map.h>
+#include <game/shot.h>
 #include <game/snake.h>
 #include <game/walker.h>
 
 #define NUM_WALKERS (128)
 #define NUM_BLOOD (1024)
+#define NUM_SHOTS (128)
 typedef struct
 {
 	game_snake snake;
 	game_walker walkers[NUM_WALKERS];
 	game_blood blood[NUM_BLOOD];
 	whitgl_int next_blood;
+	game_shot shots[NUM_SHOTS];
+	whitgl_int next_shot;
 	whitgl_fvec fcamera;
 	whitgl_ivec camera;
 } game_game;
