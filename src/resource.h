@@ -28,6 +28,7 @@ typedef enum
 	SOUND_HURT01,
 	SOUND_HURT02,
 	SOUND_HURT03,
+	SOUND_PLING,
 	SOUND_MAX
 } resource_sound_enum;
 

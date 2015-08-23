@@ -27,6 +27,7 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 	game_game game;
 	whitgl_ivec snake_spawn = {1,1};
 	whitgl_int num_walker = 0;
+	whitgl_int num_pickups = 0;
 	whitgl_int i;
 	for(i=0; i<NUM_WALKERS; i++)
 		game.walkers[i] = game_walker_zero;
@@ -36,6 +37,8 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 	for(i=0; i<NUM_SHOTS; i++)
 		game.shots[i] = game_shot_zero;
 	game.next_shot = 0;
+	for(i=0; i<NUM_PICKUPS; i++)
+		game.pickups[i] = game_pickup_zero;
 	for(i=0; i<NUM_TILES; i++)
 	{
 		whitgl_ivec pos = game_map_pos_from_index(i);
@@ -45,6 +48,11 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 		{
 			game.walkers[num_walker] = game_walker_spawn(pos, num_walker);
 			num_walker++;
+		}
+		if(map->tiles[i] == TILE_PICKUP)
+		{
+			game.pickups[num_pickups] = game_pickup_spawn(pos);
+			num_pickups++;
 		}
 	}
 	game.snake = game_snake_zero(snake_spawn);
@@ -76,6 +84,8 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		game.blood[i] = game_blood_update(game.blood[i], map);
 	for(i=0; i<NUM_SHOTS; i++)
 		game.shots[i] = game_shot_update(game.shots[i], map);
+	for(i=0; i<NUM_PICKUPS; i++)
+		game.pickups[i] = game_pickup_update(game.pickups[i]);
 
 	whitgl_fvec target = _game_camera_target(game, screen_size);
 	game.fcamera = whitgl_fvec_interpolate(game.fcamera, whitgl_fvec_inverse(target), 0.08);
@@ -107,7 +117,6 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		if(game.snake.size > 3)
 			game.snake.size--;
 		game.snake.old_pos = game.snake.pos[game.snake.size];
-		// whitgl_sound_play(SOUND_HIT, whitgl_randfloat()*0.5+0.75);
 		whitgl_sound_play(SOUND_HURT00+whitgl_randint(4), whitgl_randfloat()*0.5+0.75);
 		game = _game_spawn_blood(game, game.shots[i].pos, game.shots[i].speed);
 	}
@@ -144,6 +153,16 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		whitgl_sound_play(SOUND_LASER, whitgl_randfloat()*0.5+0.75);
 	}
 
+	for(i=0; i<NUM_PICKUPS; i++)
+	{
+		if(!game.pickups[i].active)
+			continue;
+		whitgl_faabb pickup_col = game_pickup_collider(game.pickups[i]);
+		if(!game_snake_collide(game.snake, pickup_col))
+			continue;
+		game.pickups[i] = game_pickup_picked(game.pickups[i]);
+	}
+
 	if(whitgl_randfloat() > 1-game.snake.size*0.005)
 	{
 		whitgl_int segment = whitgl_randint(game.snake.size);
@@ -161,32 +180,15 @@ void game_draw(game_game game, const game_map* map)
 {
 	game_snake_draw(game.snake, map, game.camera);
 	whitgl_int i;
-	for(i=0; i<NUM_WALKERS; i++)
-		game_walker_draw(game.walkers[i], game.camera);
-
-	// for(i=0; i<NUM_WALKERS; i++)
-	// {
-	// 	if(!game.walkers[i].active)
-	// 		continue;
-	// 	whitgl_faabb walk_col = game_walker_collider(game.walkers[i]);
-	// 	whitgl_iaabb draw_rect = whitgl_faabb_to_iaabb(whitgl_faabb_scale(walk_col, whitgl_fvec_val(8)));
-	// 	whitgl_sys_color col = {0xff,0xff,0xff,0x80};
-	// 	whitgl_sys_draw_iaabb(draw_rect, col);
-	// }
-	// for(i=0; i<game.snake.size; i++)
-	// {
-	// 	whitgl_faabb snake_col;
-	// 	snake_col.a = whitgl_ivec_to_fvec(game.snake.pos[i]);
-	// 	snake_col.b = whitgl_fvec_add(snake_col.a, whitgl_fvec_val(1));
-	// 	whitgl_iaabb draw_rect = whitgl_faabb_to_iaabb(whitgl_faabb_scale(snake_col, whitgl_fvec_val(8)));
-	// 	whitgl_sys_color col = {0x00,0x00,0x00,0x80};
-	// 	whitgl_sys_draw_iaabb(draw_rect, col);
-	// }
+	for(i=0; i<NUM_PICKUPS; i++)
+		game_pickup_draw(game.pickups[i], game.camera);
 }
 
 void game_draw_over(game_game game)
 {
 	whitgl_int i;
+	for(i=0; i<NUM_WALKERS; i++)
+		game_walker_draw(game.walkers[i], game.camera);
 	for(i=0; i<NUM_BLOOD; i++)
 		game_blood_draw(game.blood[i], game.camera);
 	for(i=0; i<NUM_SHOTS; i++)

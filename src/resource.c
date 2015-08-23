@@ -25,4 +25,5 @@ void resources_load()
 	whitgl_sound_add(SOUND_HURT01, "data/sound/hurt01.ogg");
 	whitgl_sound_add(SOUND_HURT02, "data/sound/hurt02.ogg");
 	whitgl_sound_add(SOUND_HURT03, "data/sound/hurt03.ogg");
+	whitgl_sound_add(SOUND_PLING, "data/sound/pling.ogg");
 }

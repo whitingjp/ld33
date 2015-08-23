@@ -4,6 +4,7 @@
 #include <whitgl/math.h>
 #include <game/blood.h>
 #include <game/map.h>
+#include <game/pickup.h>
 #include <game/shot.h>
 #include <game/snake.h>
 
@@ -21,9 +22,10 @@ typedef struct
 
 static const game_walker game_walker_zero = {false, {0,0}, 0.04, 0, 0, false, false, 0};
 
-#define NUM_WALKERS (128)
+#define NUM_WALKERS (256)
 #define NUM_BLOOD (1024)
-#define NUM_SHOTS (128)
+#define NUM_SHOTS (256)
+#define NUM_PICKUPS (256)
 typedef struct
 {
 	game_snake snake;
@@ -32,6 +34,7 @@ typedef struct
 	whitgl_int next_blood;
 	game_shot shots[NUM_SHOTS];
 	whitgl_int next_shot;
+	game_pickup pickups[NUM_PICKUPS];
 	whitgl_fvec fcamera;
 	whitgl_ivec camera;
 } game_game;

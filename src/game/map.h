@@ -11,6 +11,7 @@ typedef enum
 	TILE_VINE_WALL,
 	TILE_SPAWN,
 	TILE_WALKER,
+	TILE_PICKUP,
 	TILE_MAX,
 } game_map_tile;
 
