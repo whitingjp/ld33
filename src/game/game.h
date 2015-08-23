@@ -37,6 +37,8 @@ typedef struct
 	game_pickup pickups[NUM_PICKUPS];
 	whitgl_fvec fcamera;
 	whitgl_ivec camera;
+	whitgl_float camera_shake;
+	whitgl_ivec shook_camera;
 } game_game;
 game_game game_game_zero(const game_map* map, whitgl_ivec screen_size);
 

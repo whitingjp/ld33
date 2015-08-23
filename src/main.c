@@ -20,14 +20,14 @@ int main(int argc, char** argv)
 {
 	WHITGL_LOG("Starting main.");
 
-	bool fullscreen = false;
+	bool fullscreen = true;
 	bool vsync = true;
 	bool can_edit = false;
 	int currentarg;
 	for(currentarg=1; currentarg<argc; currentarg++)
 	{
-		if(strncmp(argv[currentarg], "fullscreen", 10)==0)
-			fullscreen = true;
+		if(strncmp(argv[currentarg], "windowed", 10)==0)
+			fullscreen = false;
 		if(strncmp(argv[currentarg], "no_vsync", 7)==0)
 			vsync = false;
 		if(strncmp(argv[currentarg], "editor", 6)==0)

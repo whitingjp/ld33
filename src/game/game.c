@@ -58,6 +58,7 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 	game.snake = game_snake_zero(snake_spawn);
 	game.fcamera = whitgl_fvec_inverse(_game_camera_target(game, screen_size));
 	game.camera = whitgl_fvec_to_ivec(game.fcamera);
+	game.camera_shake = 0;
 	return game;
 }
 
@@ -89,7 +90,12 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 
 	whitgl_fvec target = _game_camera_target(game, screen_size);
 	game.fcamera = whitgl_fvec_interpolate(game.fcamera, whitgl_fvec_inverse(target), 0.08);
-	game.camera = whitgl_fvec_to_ivec(game.fcamera);
+	whitgl_fvec shake = {(whitgl_randfloat()-0.5)*game.camera_shake*16, (whitgl_randfloat()-0.5)*game.camera_shake*16};
+	game.camera = whitgl_fvec_to_ivec(whitgl_fvec_add(game.fcamera, shake));
+
+	game.camera_shake -= 0.05;
+	if(game.camera_shake < 0)
+		game.camera_shake = 0;
 
 	for(i=0; i<NUM_WALKERS; i++)
 	{
@@ -104,6 +110,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		whitgl_sound_play(SOUND_SPLAT00+whitgl_randint(6), whitgl_randfloat()/5+0.9);
 		whitgl_fvec speed = whitgl_fvec_scale(whitgl_facing_to_fvec(game.snake.dir), whitgl_fvec_val(0.3));
 		game = _game_spawn_blood(game, game.walkers[i].pos, speed);
+		game.camera_shake += 0.75;
 	}
 
 	for(i=0; i<NUM_SHOTS; i++)
@@ -119,6 +126,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		game.snake.old_pos = game.snake.pos[game.snake.size];
 		whitgl_sound_play(SOUND_HURT00+whitgl_randint(4), whitgl_randfloat()*0.5+0.75);
 		game = _game_spawn_blood(game, game.shots[i].pos, game.shots[i].speed);
+		game.camera_shake += 1;
 	}
 
 	for(i=0; i<NUM_WALKERS; i++)
@@ -139,6 +147,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			game.walkers[i].active = false;
 			whitgl_sound_play(SOUND_HIT, whitgl_randfloat()*0.5+0.75);
 			game = _game_spawn_blood(game, game.shots[j].pos, game.shots[j].speed);
+			game.camera_shake += 0.5;
 		}
 	}
 
@@ -151,16 +160,20 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		game.shots[game.next_shot] = game_shot_spawn(game.walkers[i].pos, game.walkers[i].speed < 0, i);
 		game.next_shot = whitgl_iwrap(game.next_shot+1, 0, NUM_SHOTS);
 		whitgl_sound_play(SOUND_LASER, whitgl_randfloat()*0.5+0.75);
+		game.camera_shake += 0.2;
 	}
 
 	for(i=0; i<NUM_PICKUPS; i++)
 	{
 		if(!game.pickups[i].active)
 			continue;
+		if(game.pickups[i].picked)
+			continue;
 		whitgl_faabb pickup_col = game_pickup_collider(game.pickups[i]);
 		if(!game_snake_collide(game.snake, pickup_col))
 			continue;
 		game.pickups[i] = game_pickup_picked(game.pickups[i]);
+		game.camera_shake += 0.1;
 	}
 
 	if(whitgl_randfloat() > 1-game.snake.size*0.005)
