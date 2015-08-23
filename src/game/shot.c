@@ -9,7 +9,7 @@ game_shot game_shot_spawn(whitgl_fvec pos, whitgl_bool facing_left)
 	shot.active = true;
 	shot.pos = pos;
 	shot.speed = whitgl_fvec_zero;
-	shot.speed.x = facing_left ? 1 : -1;
+	shot.speed.x = facing_left ? -1 : 1;
 	shot.speed.x *= 0.2;
 	return shot;
 }

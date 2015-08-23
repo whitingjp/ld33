@@ -89,11 +89,10 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 	{
 		if(!game.walkers[i].active)
 			continue;
-		if(whitgl_randfloat() > 0.99)
-		{
-			game.shots[game.next_shot] = game_shot_spawn(game.walkers[i].pos, game.walkers[i].speed < 0);
-			game.next_shot = whitgl_iwrap(game.next_shot+1, 0, NUM_SHOTS);
-		}
+		if(!game.walkers[i].shooting)
+			continue;
+		game.shots[game.next_shot] = game_shot_spawn(game.walkers[i].pos, game.walkers[i].speed < 0);
+		game.next_shot = whitgl_iwrap(game.next_shot+1, 0, NUM_SHOTS);
 	}
 
 	if(whitgl_randfloat() > 1-game.snake.size*0.005)
