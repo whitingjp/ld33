@@ -42,7 +42,10 @@ game_game game_update(game_game game, const game_map* map)
 			snake_col.a = whitgl_ivec_to_fvec(game.snake.pos[j]);
 			snake_col.b = whitgl_fvec_add(snake_col.a, whitgl_fvec_val(1));
 			if(whitgl_faabb_intersects(snake_col, walk_col))
+			{
 				game.walkers[i].active = false;
+				game.snake.size++;
+			}
 		}
 	}
 	return game;
