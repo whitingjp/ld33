@@ -79,6 +79,9 @@ game_walker game_walker_update(game_walker walker, const game_game* game, const 
 		walker.wait = 1;
 	}
 
+	box = game_walker_collider(walker);
+	box.a.x += 0.2;
+	box.b.x -= 0.2;
 	whitgl_fvec floor_off = {walker.speed > 0 ? 1 : -1, 1};
 	whitgl_faabb floor_box = whitgl_faabb_add(box, floor_off);
 	whitgl_bool is_floor = game_map_collide(map, floor_box, true);
