@@ -108,10 +108,14 @@ int main(int argc, char** argv)
 				game = game_game_zero(&map, setup.size);
 			}
 			if(editing)
+			{
 				editor = editor_update(editor, &map, setup.pixel_size);
+			}
 			else
+			{
 				game = game_update(game, &map, setup.size);
-			map_anim = whitgl_fwrap(map_anim+0.05, 0, 1);
+				map_anim = whitgl_fwrap(map_anim+0.05, 0, 1);
+			}
 
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 				running = false;
