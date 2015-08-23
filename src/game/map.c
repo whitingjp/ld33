@@ -22,13 +22,24 @@ game_map game_map_zero()
 	}
 	return map;
 }
-void game_map_draw(const game_map* map, whitgl_bool editor)
+
+whitgl_iaabb _world_bounds(whitgl_ivec pos, whitgl_ivec sprite_size, whitgl_ivec screen_size)
+{
+	whitgl_iaabb bounds;
+	bounds.a = whitgl_ivec_inverse(whitgl_ivec_divide(pos, sprite_size));
+	bounds.b = whitgl_ivec_add(bounds.a, whitgl_ivec_divide(screen_size, sprite_size));
+	bounds.b.x+=2; bounds.b.y+=2;
+	return bounds;
+}
+
+void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_size)
 {
 	whitgl_sprite map_sprite = {IMAGE_SPRITES, {0,32}, {8,8}};
 	whitgl_ivec i;
-	for(i.x=0; i.x<MAP_WIDTH; i.x++)
+	whitgl_iaabb bounds = _world_bounds(whitgl_ivec_zero, map_sprite.size, screen_size);
+	for(i.x=bounds.a.x; i.x<bounds.b.x; i.x++)
 	{
-		for(i.y=0; i.y<MAP_HEIGHT; i.y++)
+		for(i.y=bounds.a.x; i.y<bounds.b.y; i.y++)
 		{
 			game_map_tile tile = game_map_get_tile(map, i);
 			whitgl_ivec draw_pos = whitgl_ivec_scale(i, map_sprite.size);

@@ -92,7 +92,7 @@ int main(int argc, char** argv)
 		whitgl_sys_draw_iaabb(screen, background);
 		if(!editing)
 			game_draw(game, &map);
-		game_map_draw(&map, editing);
+		game_map_draw(&map, editing, setup.size);
 		if(!editing)
 			game_draw_over(game);
 		whitgl_sys_draw_finish();

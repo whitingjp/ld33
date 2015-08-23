@@ -23,7 +23,7 @@ typedef struct
 } game_map;
 
 game_map game_map_zero();
-void game_map_draw(const game_map* map, whitgl_bool editor);
+void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_size);
 game_map_tile game_map_get_tile(const game_map* map, whitgl_ivec pos);
 whitgl_ivec game_map_pos_from_index(whitgl_int i);
 whitgl_int game_map_index_from_pos(whitgl_ivec v);
