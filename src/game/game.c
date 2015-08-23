@@ -45,6 +45,7 @@ game_game game_update(game_game game, const game_map* map)
 			{
 				game.walkers[i].active = false;
 				game.snake.size++;
+				game.snake.old_pos = game.snake.pos[game.snake.size];
 			}
 		}
 	}
