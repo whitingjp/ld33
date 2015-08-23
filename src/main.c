@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 
 	game_map map = game_map_zero();
 	whitgl_file_load("data/level.lvl", sizeof(game_map), (void*)&map);
-	game_game game = game_game_zero(&map);
+	game_game game = game_game_zero(&map, setup.size);
 	editor_editor editor = editor_editor_zero;
 
 	whitgl_bool editing = false;
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 			{
 				editing = !editing;
 				editor.camera = game.camera;
-				game = game_game_zero(&map);
+				game = game_game_zero(&map, setup.size);
 			}
 			if(editing)
 				editor = editor_update(editor, &map, setup.pixel_size);

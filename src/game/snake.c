@@ -2,6 +2,7 @@
 
 #include <whitgl/input.h>
 #include <whitgl/logging.h>
+#include <whitgl/sound.h>
 #include <whitgl/sys.h>
 
 #include <resource.h>
@@ -111,6 +112,8 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		for(i=MAX_SEGMENTS-1; i>0; i--)
 			snake.pos[i] = snake.pos[i-1];
 		snake.pos[0] = snake.new_pos;
+		if(whitgl_randfloat() > 0.5)
+			whitgl_sound_play(SOUND_SLICK00+whitgl_randint(6), whitgl_randfloat()*0.2+0.9);
 	}
 	if(snake.t == 0 || snake.t == 1)
 	{

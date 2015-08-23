@@ -1,9 +1,25 @@
 #include "game.h"
 
+#include <whitgl/sound.h>
 #include <whitgl/sys.h>
 #include <resource.h>
 
-game_game game_game_zero(const game_map* map)
+whitgl_fvec _game_camera_target(game_game game, whitgl_ivec screen_size)
+{
+	whitgl_fvec target = whitgl_fvec_zero;
+	whitgl_int i;
+	for(i=0; i<game.snake.size; i++)
+		target = whitgl_fvec_add(target, whitgl_ivec_to_fvec(game.snake.pos[i]));
+	target = whitgl_fvec_divide(target, whitgl_fvec_val(game.snake.size));
+	whitgl_fvec screen = whitgl_fvec_divide(whitgl_ivec_to_fvec(screen_size), whitgl_fvec_val(8*2));
+	target = whitgl_fvec_sub(target, screen);
+	whitgl_faabb bounds = {whitgl_fvec_zero, {MAP_WIDTH-screen_size.x/8, MAP_HEIGHT-screen_size.y/8}};
+	target = whitgl_fvec_bound(target, bounds);
+	target = whitgl_fvec_scale(target, whitgl_fvec_val(8));
+	return target;
+}
+
+game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 {
 	game_game game;
 	whitgl_ivec snake_spawn = {1,1};
@@ -23,8 +39,8 @@ game_game game_game_zero(const game_map* map)
 	}
 	game.snake = game_snake_zero(snake_spawn);
 	game.next_blood = 0;
-	game.camera = whitgl_ivec_zero;
-	game.fcamera = whitgl_fvec_zero;
+	game.fcamera = whitgl_fvec_inverse(_game_camera_target(game, screen_size));
+	game.camera = whitgl_fvec_to_ivec(game.fcamera);
 	return game;
 }
 
@@ -37,15 +53,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 	for(i=0; i<NUM_BLOOD; i++)
 		game.blood[i] = game_blood_update(game.blood[i], map);
 
-	whitgl_fvec target = whitgl_fvec_zero;
-	for(i=0; i<game.snake.size; i++)
-		target = whitgl_fvec_add(target, whitgl_ivec_to_fvec(game.snake.pos[i]));
-	target = whitgl_fvec_divide(target, whitgl_fvec_val(game.snake.size));
-	whitgl_fvec screen = whitgl_fvec_divide(whitgl_ivec_to_fvec(screen_size), whitgl_fvec_val(8*2));
-	target = whitgl_fvec_sub(target, screen);
-	whitgl_faabb bounds = {whitgl_fvec_zero, {MAP_WIDTH-screen_size.x/8, MAP_HEIGHT-screen_size.y/8}};
-	target = whitgl_fvec_bound(target, bounds);
-	target = whitgl_fvec_scale(target, whitgl_fvec_val(8));
+	whitgl_fvec target = _game_camera_target(game, screen_size);
 	game.fcamera = whitgl_fvec_interpolate(game.fcamera, whitgl_fvec_inverse(target), 0.08);
 	game.camera = whitgl_fvec_to_ivec(game.fcamera);
 
@@ -59,12 +67,12 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			game.walkers[i].active = false;
 			game.snake.size++;
 			game.snake.old_pos = game.snake.pos[game.snake.size];
-
+			whitgl_sound_play(SOUND_SPLAT00+whitgl_randint(6), whitgl_randfloat()/5+0.9);
 			whitgl_int j;
 			for(j=0; j<24; j++)
 			{
 				whitgl_fvec spawn_point = {game.walkers[i].pos.x+0.5,game.walkers[i].pos.y+0.5};
-				whitgl_fvec speed = whitgl_fvec_scale(whitgl_facing_to_fvec(game.snake.dir), whitgl_fvec_val(0.2));
+				whitgl_fvec speed = whitgl_fvec_scale(whitgl_facing_to_fvec(game.snake.dir), whitgl_fvec_val(0.3));
 				speed.y -= 0.5;
 				game.blood[game.next_blood] = game_blood_spawn(spawn_point, speed);
 				game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
