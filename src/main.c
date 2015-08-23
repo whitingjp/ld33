@@ -93,6 +93,8 @@ int main(int argc, char** argv)
 		if(!editing)
 			game_draw(game, &map);
 		game_map_draw(&map, editing);
+		if(!editing)
+			game_draw_over(game);
 		whitgl_sys_draw_finish();
 	}
 
