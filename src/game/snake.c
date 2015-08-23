@@ -159,8 +159,28 @@ typedef struct
 	whitgl_bool horizontal;
 	whitgl_ivec sprite_offset;
 	whitgl_ivec draw_offset;
-} tail_data;
-const tail_data tail_data_zero = {INVALID, NARR, VERT, {0,0}, {0,0}};
+} snake_anim_data;
+const snake_anim_data tail_data_zero = {INVALID, NARR, VERT, {0,0}, {0,0}};
+
+const snake_anim_data all_snake_data[16] =
+{
+	{  VALID, NARR, HORI, { 0, 0}, { 0, 0}}, // 0, 0
+	{  VALID, WIDE, VERT, {48,64}, {-8, 0}}, // 1, 0
+	{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 2, 0  INVALID
+	{  VALID, WIDE, VERT, {48,32}, { 0, 0}}, // 3, 0
+	{  VALID, NARR, HORI, { 0,32}, { 0, 0}}, // 0, 1
+	{  VALID, WIDE, HORI, { 0,16}, {-8, 0}}, // 1, 1
+	{  VALID, NARR, HORI, { 0,64}, { 0,-8}}, // 2, 1
+	{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 3, 1  INVALID
+	{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 0, 2  INVALID
+	{  VALID, WIDE, VERT, {32,32}, {-8, 0}}, // 1, 2
+	{  VALID, NARR, HORI, {32, 0}, { 0,-8}}, // 2, 2
+	{  VALID, WIDE, VERT, {32,64}, { 0, 0}}, // 3, 2
+	{  VALID, NARR, HORI, { 0,80}, { 0, 0}}, // 0, 3
+	{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 1, 3 INVALID
+	{  VALID, NARR, HORI, { 0,48}, { 0,-8}}, // 2, 3
+	{  VALID, WIDE, HORI, { 0,24}, { 0, 0}}, // 3, 3
+};
 
 void game_snake_draw(game_snake snake)
 {
@@ -223,30 +243,11 @@ void game_snake_draw(game_snake snake)
 		out_dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-2],snake.pos[snake.size-1]));
 	}
 	whitgl_int data_index = in_dir+out_dir*4;
-	const tail_data all_tail_data[16] =
-	{
-		{  VALID, NARR, HORI, { 0, 0}, { 0, 0}}, // 0, 0
-		{  VALID, WIDE, VERT, {48,64}, {-8, 0}}, // 1, 0
-		{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 2, 0  INVALID
-		{  VALID, WIDE, VERT, {48,32}, { 0, 0}}, // 3, 0
-		{  VALID, NARR, HORI, { 0,32}, { 0, 0}}, // 0, 1
-		{  VALID, WIDE, HORI, { 0,16}, {-8, 0}}, // 1, 1
-		{  VALID, NARR, HORI, { 0,64}, { 0,-8}}, // 2, 1
-		{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 3, 1  INVALID
-		{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 0, 2  INVALID
-		{  VALID, WIDE, VERT, {32,32}, {-8, 0}}, // 1, 2
-		{  VALID, NARR, HORI, {32, 0}, { 0,-8}}, // 2, 2
-		{  VALID, WIDE, VERT, {32,64}, { 0, 0}}, // 3, 2
-		{  VALID, NARR, HORI, { 0,80}, { 0, 0}}, // 0, 3
-		{INVALID, NARR, VERT, { 0, 0}, { 0, 0}}, // 1, 3 INVALID
-		{  VALID, NARR, HORI, { 0,48}, { 0,-8}}, // 2, 3
-		{  VALID, WIDE, HORI, { 0,24}, { 0, 0}}, // 3, 3
-	};
 
 	draw_pos.y += snake.fall_timer*8;
 	whitgl_int iframe = snake.t*3.99;
 	frame = whitgl_ivec_zero;
-	tail_data tdata = all_tail_data[data_index];
+	snake_anim_data tdata = all_snake_data[data_index];
 
 	if(tdata.wide)
 		tail_sprite.size.x *= 2;
