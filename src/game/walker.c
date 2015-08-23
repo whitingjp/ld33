@@ -23,7 +23,7 @@ game_walker game_walker_update(game_walker walker, const game_map* map)
 	}
 
 	walker.pos.x += walker.speed;
-	whitgl_faabb box = {walker.pos, {walker.pos.x+1, walker.pos.y+0.5}};
+	whitgl_faabb box = game_walker_collider(walker);
 	whitgl_bool collided = game_map_collide(map, box);
 	if(collided)
 		walker.wait = 0.25;
@@ -44,4 +44,9 @@ void game_walker_draw(game_walker walker)
 	whitgl_ivec draw_pos = whitgl_fvec_to_ivec(whitgl_fvec_scale(walker.pos, whitgl_ivec_to_fvec(walker_sprite.size)));
 	whitgl_ivec frame = {walker.anim*2, walker.speed > 0 ? 0 : 1};
 	whitgl_sys_draw_sprite(walker_sprite, frame, draw_pos);
+}
+whitgl_faabb game_walker_collider(game_walker walker)
+{
+	whitgl_faabb box = {walker.pos, {walker.pos.x+1, walker.pos.y+0.5}};
+	return box;
 }
