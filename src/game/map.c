@@ -73,7 +73,7 @@ void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_s
 			{
 				whitgl_ivec test_pos = whitgl_ivec_add(i, whitgl_facing_to_ivec(j));
 				game_map_tile tile = game_map_get_tile(map, test_pos);
-				if(tile == TILE_WALL || tile == TILE_VINE_WALL)
+				if(tile == TILE_WALL)
 					flags |= (whitgl_int)whitgl_fpow(2, j);
 			}
 			whitgl_ivec frame = whitgl_ivec_zero;
@@ -148,7 +148,7 @@ whitgl_bool game_map_collide(const game_map* map, whitgl_faabb box)
 		for(p.y=bounds.a.y; p.y<=bounds.b.y; p.y++)
 		{
 			whitgl_int i = game_map_index_from_pos(p);
-			if(map->tiles[i] == TILE_WALL || map->tiles[i] == TILE_VINE_WALL)
+			if(map->tiles[i] == TILE_WALL)
 				return true;
 		}
 	}

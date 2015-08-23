@@ -188,9 +188,9 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 	return game;
 }
 
-void game_draw(game_game game, const game_map* map)
+void game_draw(game_game game)
 {
-	game_snake_draw(game.snake, map, game.camera);
+	game_snake_draw(game.snake, game.camera);
 	whitgl_int i;
 	for(i=0; i<NUM_PICKUPS; i++)
 		game_pickup_draw(game.pickups[i], game.camera);

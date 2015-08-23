@@ -40,8 +40,6 @@ whitgl_bool _game_snake_move_valid(game_snake snake, whitgl_ivec pos, const game
 			valid = false;
 		if(game_map_get_tile(map, pos) == TILE_WALL)
 			valid = false;
-		if(game_map_get_tile(map, pos) == TILE_VINE_WALL)
-			valid = false;
 	}
 	return valid;
 }
@@ -66,8 +64,6 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 			whitgl_ivec test_pos = whitgl_ivec_add(snake.pos[i], whitgl_facing_to_ivec(j));
 			if(j!=2 && (i==snake.size-1 || i==0))
 				continue;
-			if(game_map_get_tile(map, test_pos) == TILE_VINE_WALL)
-				snake.falling = false;
 			if(j==2 && game_map_get_tile(map, test_pos) == TILE_WALL)
 				snake.falling = false;
 		}
@@ -82,7 +78,7 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 		snake.fall_timer += snake.fall_speed;
 		if(snake.fall_timer > 0.5)
 		{
-			for(i=0 ;i<snake.size; i++)
+			for(i=0 ;i<MAX_SEGMENTS; i++)
 			{
 				snake.pos[i].y++;
 			}
@@ -199,10 +195,9 @@ const snake_anim_data all_snake_data[16] =
 	{  VALID, WIDE, HORI, { 0,24}, { 0, 0}}, // 3, 3
 };
 
-void game_snake_draw(game_snake snake, const game_map* map, whitgl_ivec camera)
+void game_snake_draw(game_snake snake, whitgl_ivec camera)
 {
 	whitgl_sprite snake_sprite = {IMAGE_SPRITES, {0,0}, {8,8}};
-	whitgl_sprite sticky_sprite = {IMAGE_SPRITES, {32,40}, {8,8}};
 	whitgl_int i;
 	for(i=1; i<snake.size-1; i++)
 	{
@@ -218,18 +213,6 @@ void game_snake_draw(game_snake snake, const game_map* map, whitgl_ivec camera)
 		whitgl_ivec frame = _game_snake_flags_to_frame(flag);
 		draw_pos.y += snake.fall_timer*8;
 		whitgl_sys_draw_sprite(snake_sprite, frame, draw_pos);
-		whitgl_bool sticky = false;
-		whitgl_int j;
-		for(j=0; j<4; j++)
-		{
-			whitgl_ivec test_pos = whitgl_ivec_add(snake.pos[i], whitgl_facing_to_ivec(j));
-			if(game_map_get_tile(map, test_pos) == TILE_VINE_WALL)
-				sticky = true;;
-		}
-		if(game_map_get_tile(map, snake.pos[i]) == TILE_VINE)
-			sticky = true;
-		if(sticky)
-			whitgl_sys_draw_sprite(sticky_sprite, whitgl_ivec_zero, draw_pos);
 	}
 
 	whitgl_ivec draw_pos;

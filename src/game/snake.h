@@ -24,7 +24,7 @@ typedef struct
 
 game_snake game_snake_zero(whitgl_ivec pos);
 game_snake game_snake_update(game_snake snake, const game_map* map);
-void game_snake_draw(game_snake snake, const game_map* map, whitgl_ivec camera);
+void game_snake_draw(game_snake snake, whitgl_ivec camera);
 
 whitgl_bool game_snake_collide(game_snake snake, whitgl_faabb box);
 

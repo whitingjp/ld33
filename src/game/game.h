@@ -43,7 +43,7 @@ typedef struct
 game_game game_game_zero(const game_map* map, whitgl_ivec screen_size);
 
 game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_size);
-void game_draw(game_game game, const game_map* map);
+void game_draw(game_game game);
 void game_draw_over(game_game game);
 
 #endif // GAME_GAME_
