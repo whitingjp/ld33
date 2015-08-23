@@ -120,6 +120,8 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		if(!game_map_collide(map, shot_col, false))
 			continue;
 		game.shots[i].active = false;
+		whitgl_sound_play(SOUND_GLANCE, whitgl_randfloat()*0.5+0.75);
+		game.camera_shake += 0.2;
 	}
 
 	for(i=0; i<NUM_SHOTS; i++)
