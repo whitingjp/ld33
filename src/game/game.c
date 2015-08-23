@@ -33,9 +33,9 @@ game_game game_update(game_game game, const game_map* map)
 	return game;
 }
 
-void game_draw(game_game game)
+void game_draw(game_game game, const game_map* map)
 {
-	game_snake_draw(game.snake);
+	game_snake_draw(game.snake, map);
 	whitgl_int i;
 	for(i=0; i<NUM_WALKERS; i++)
 		game_walker_draw(game.walkers[i]);

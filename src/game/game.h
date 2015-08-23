@@ -15,6 +15,6 @@ typedef struct
 game_game game_game_zero(const game_map* map);
 
 game_game game_update(game_game game, const game_map* map);
-void game_draw(game_game game);
+void game_draw(game_game game, const game_map* map);
 
 #endif // GAME_GAME_

@@ -11,6 +11,7 @@ typedef struct
 {
 	whitgl_float t;
 	whitgl_ivec pos[MAX_SEGMENTS];
+	whitgl_bool sticky[MAX_SEGMENTS];
 	whitgl_int size;
 	whitgl_ivec new_pos;
 	whitgl_int dir;
@@ -24,6 +25,6 @@ typedef struct
 
 game_snake game_snake_zero(whitgl_ivec pos);
 game_snake game_snake_update(game_snake snake, const game_map* map);
-void game_snake_draw(game_snake snake);
+void game_snake_draw(game_snake snake, const game_map* map);
 
 #endif // GAME_SNAKE_
