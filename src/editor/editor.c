@@ -12,8 +12,16 @@ editor_editor editor_update(editor_editor editor, game_map* map, whitgl_int pixe
 	selected = whitgl_ivec_bound(selected, bounds);
 	whitgl_int index = game_map_index_from_pos(selected);
 	whitgl_int i;
-	for(i=0; i<TILE_MAX; i++)
-		if(whitgl_input_down(WHITGL_INPUT_1+i))
-			map->tiles[index] = i;
+	if(whitgl_input_down(WHITGL_INPUT_A))
+	{
+		for(i=0; i<8; i++)
+			if(whitgl_input_down(WHITGL_INPUT_1+i))
+				map->decorations[index] = i;
+	} else
+	{
+		for(i=0; i<TILE_MAX; i++)
+			if(whitgl_input_down(WHITGL_INPUT_1+i))
+				map->tiles[index] = i;
+	}
 	return editor;
 }

@@ -46,7 +46,7 @@ game_walker game_walker_update(game_walker walker, const game_game* game, const 
 
 	whitgl_bool see_snake = false;
 	whitgl_int i, j;
-	for(i=0; i<8; i++)
+	for(i=0; i<12; i++)
 	{
 		whitgl_fvec snake_off = {walker.speed > 0 ? i : -i, 0};
 		whitgl_faabb check = whitgl_faabb_add(game_walker_collider(walker), snake_off);

@@ -12,12 +12,8 @@ game_map game_map_zero()
 	{
 		for(i.y=0; i.y<MAP_HEIGHT; i.y++)
 		{
-			game_map_tile type = TILE_EMPTY;
-			if(i.x == 0 || i.x == MAP_WIDTH-1)
-				type = TILE_WALL;
-			if(i.y == 0 || i.y == MAP_HEIGHT-1)
-				type = TILE_WALL;
-			map.tiles[game_map_index_from_pos(i)] = type;
+			map.tiles[game_map_index_from_pos(i)] = TILE_EMPTY;
+			map.decorations[game_map_index_from_pos(i)] = 0;
 		}
 	}
 	return map;
@@ -46,10 +42,17 @@ void game_map_draw(const game_map* map, whitgl_bool editor, whitgl_ivec screen_s
 			whitgl_ivec draw_pos = whitgl_ivec_scale(i, map_sprite.size);
 			draw_pos = whitgl_ivec_add(draw_pos, camera);
 
-			if(tile == TILE_EMPTY)
+			char decoration = game_map_get_decoration(map, i);
+			if(decoration > 0)
 			{
+				char d = decoration-1;
+				whitgl_sprite decoration_sprite = {IMAGE_SPRITES, {32,56}, {8,8}};
+				whitgl_ivec frame = {d%4, d/4};
+				whitgl_sys_draw_sprite(decoration_sprite, frame, draw_pos);
 				continue;
 			}
+			if(tile == TILE_EMPTY)
+				continue;
 			if(tile >= TILE_SPAWN)
 			{
 				whitgl_ivec frame = {tile-TILE_SPAWN, 4};
@@ -111,6 +114,19 @@ game_map_tile game_map_get_tile(const game_map* map, whitgl_ivec pos)
 	if(pos.y >= MAP_HEIGHT)
 		return outer;
 	return map->tiles[game_map_index_from_pos(pos)];
+}
+char game_map_get_decoration(const game_map* map, whitgl_ivec pos)
+{
+	char outer = 0;
+	if(pos.x < 0)
+		return outer;
+	if(pos.x >= MAP_WIDTH)
+		return outer;
+	if(pos.y < 0)
+		return outer;
+	if(pos.y >= MAP_HEIGHT)
+		return outer;
+	return map->decorations[game_map_index_from_pos(pos)];
 }
 whitgl_ivec game_map_pos_from_index(whitgl_int i)
 {
