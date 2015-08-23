@@ -6,7 +6,7 @@
 #include <game/snake.h>
 #include <game/walker.h>
 
-#define NUM_WALKERS (16)
+#define NUM_WALKERS (128)
 typedef struct
 {
 	game_snake snake;

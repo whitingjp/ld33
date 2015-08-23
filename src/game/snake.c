@@ -302,3 +302,17 @@ void game_snake_draw(game_snake snake, const game_map* map)
 		whitgl_sys_draw_sprite(tail_sprite, frame, draw_pos);
 
 }
+
+whitgl_bool game_snake_collide(game_snake snake, whitgl_faabb box)
+{
+	whitgl_int j;
+	for(j=0; j<snake.size; j++)
+	{
+		whitgl_faabb snake_col;
+		snake_col.a = whitgl_ivec_to_fvec(snake.pos[j]);
+		snake_col.b = whitgl_fvec_add(snake_col.a, whitgl_fvec_val(1));
+		if(whitgl_faabb_intersects(snake_col, box))
+			return true;
+	}
+	return false;
+}

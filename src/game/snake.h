@@ -5,7 +5,7 @@
 
 #include <game/map.h>
 
-#define MAX_SEGMENTS (16)
+#define MAX_SEGMENTS (128)
 
 typedef struct
 {
@@ -25,5 +25,7 @@ typedef struct
 game_snake game_snake_zero(whitgl_ivec pos);
 game_snake game_snake_update(game_snake snake, const game_map* map);
 void game_snake_draw(game_snake snake, const game_map* map);
+
+whitgl_bool game_snake_collide(game_snake snake, whitgl_faabb box);
 
 #endif // GAME_SNAKE_

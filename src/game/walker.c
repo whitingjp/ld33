@@ -10,7 +10,7 @@ game_walker game_walker_spawn(whitgl_ivec pos)
 	walker.active = true;
 	return walker;
 }
-game_walker game_walker_update(game_walker walker, const game_map* map)
+game_walker game_walker_update(game_walker walker, const game_snake* snake, const game_map* map)
 {
 	if(!walker.active)
 		return walker;
@@ -24,8 +24,15 @@ game_walker game_walker_update(game_walker walker, const game_map* map)
 
 	walker.pos.x += walker.speed;
 	whitgl_faabb box = game_walker_collider(walker);
-	whitgl_bool collided = game_map_collide(map, box);
+	whitgl_bool collided = false;
+	if(game_map_collide(map, box))
+		collided = true;
 	if(collided)
+		walker.wait = 0.25;
+
+	whitgl_fvec snake_off = {walker.speed > 0 ? 1 : -1, 0};
+	whitgl_faabb snake_box = whitgl_faabb_add(box, snake_off);
+	if(game_snake_collide(*snake, snake_box))
 		walker.wait = 0.25;
 
 	whitgl_fvec floor_off = {walker.speed > 0 ? 1 : -1, 1};

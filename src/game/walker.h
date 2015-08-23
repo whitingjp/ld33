@@ -2,6 +2,7 @@
 #define GAME_WALKER_
 
 #include <game/map.h>
+#include <game/snake.h>
 
 typedef struct
 {
@@ -14,7 +15,7 @@ typedef struct
 
 static const game_walker game_walker_zero = {false, {0,0}, 0.04, 0, 0};
 game_walker game_walker_spawn(whitgl_ivec pos);
-game_walker game_walker_update(game_walker walker, const game_map* map);
+game_walker game_walker_update(game_walker walker, const game_snake* snake, const game_map* map);
 void game_walker_draw(game_walker walker);
 whitgl_faabb game_walker_collider(game_walker walker);
 
