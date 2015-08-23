@@ -58,6 +58,16 @@ game_game game_update(game_game game, const game_map* map)
 		}
 	}
 
+	if(whitgl_randfloat() > 1-game.snake.size*0.005)
+	{
+		whitgl_int segment = whitgl_randint(game.snake.size);
+		whitgl_fvec spawn_point = {game.snake.pos[segment].x+0.5,game.snake.pos[segment].y+0.5};
+		whitgl_fvec speed = whitgl_fvec_zero;
+		speed.y -= 0.3;
+		game.blood[game.next_blood] = game_blood_spawn(spawn_point, speed);
+		game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
+	}
+
 	return game;
 }
 
