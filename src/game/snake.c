@@ -49,10 +49,12 @@ whitgl_bool _game_snake_move_valid(game_snake snake, whitgl_ivec pos, const game
 game_snake game_snake_update(game_snake snake, const game_map* map)
 {
 	whitgl_fvec joy = whitgl_input_joystick();
-	whitgl_int dir = whitgl_fvec_to_facing(joy);
-	bool moving = joy.x != 0 || joy.y != 0;
 	if(whitgl_input_pressed(WHITGL_INPUT_A))
 		snake.do_reverse = true;
+	if(snake.do_reverse)
+		joy = whitgl_fvec_zero;
+	whitgl_int dir = whitgl_fvec_to_facing(joy);
+	bool moving = joy.x != 0 || joy.y != 0;
 
 	snake.falling = true;
 	whitgl_int i;
@@ -124,7 +126,10 @@ game_snake game_snake_update(game_snake snake, const game_map* map)
 				new_snake.pos[i] = snake.pos[snake.size-1-i];
 			new_snake.dir = whitgl_ivec_to_facing(whitgl_ivec_sub(snake.pos[snake.size-1], snake.pos[snake.size-2]));
 			new_snake.do_reverse = false;
+			new_snake.old_pos = snake.new_pos;
+			new_snake.new_pos = snake.old_pos;
 			snake = new_snake;
+
 			snake.t = 1;
 		}
 		whitgl_ivec new_pos = whitgl_ivec_add(snake.pos[0], whitgl_facing_to_ivec(dir));
