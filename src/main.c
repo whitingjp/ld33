@@ -116,6 +116,10 @@ int main(int argc, char** argv)
 			else if(endscreen.active)
 			{
 				endscreen = end_screen_update(endscreen);
+				if(endscreen.leave)
+					game = game_game_zero(&map, setup.size);
+				if(whitgl_input_pressed(WHITGL_INPUT_ESC))
+					running = false;
 			}
 			else
 			{
@@ -125,8 +129,6 @@ int main(int argc, char** argv)
 					endscreen = end_screen_init(game.score, game.time_taken);
 			}
 
-			if(whitgl_input_pressed(WHITGL_INPUT_ESC))
-				running = false;
 			if(whitgl_sys_should_close())
 				running = false;
 

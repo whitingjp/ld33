@@ -1,5 +1,6 @@
 #include "endscreen.h"
 
+#include <whitgl/input.h>
 #include <whitgl/logging.h>
 #include <whitgl/sound.h>
 #include <whitgl/sys.h>
@@ -16,18 +17,31 @@ end_screen end_screen_init(whitgl_int score, whitgl_float time)
 	screen.transition = 0;
 	screen.score_up = 0;
 	screen.anim = 0;
+	screen.leave = false;
 	return screen;
 }
 end_screen end_screen_update(end_screen screen)
 {
 	if(!screen.active)
 		return screen;
+	if(screen.leave)
+	{
+		screen.transition = whitgl_fclamp(screen.transition-0.025, 0, 1);
+		if(screen.transition == 0)
+			screen.active = false;
+		return screen;
+	}
 	screen.transition = whitgl_fclamp(screen.transition+0.025, 0, 1);
 	if(screen.transition == 1)
 		screen.score_up = screen.score_up*0.96+0.04;
 	if(screen.score_up > 0.997)
 		screen.score_up = 1;
 	screen.anim = whitgl_fwrap(screen.anim+1/24.0,0,1);
+	if(screen.score_up == 1)
+	{
+		if(whitgl_input_pressed(WHITGL_INPUT_A))
+			screen.leave = true;
+	}
 	return screen;
 }
 
