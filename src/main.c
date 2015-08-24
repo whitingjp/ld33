@@ -14,6 +14,7 @@
 #include <game/game.h>
 #include <game/map.h>
 #include <endscreen.h>
+#include <pause.h>
 
 #include <resource.h>
 
@@ -87,6 +88,7 @@ int main(int argc, char** argv)
 	game_game game = game_game_zero(&map, setup.size);
 	editor_editor editor = editor_editor_zero;
 	end_screen endscreen = end_screen_zero;
+	pause_screen pausescreen = pause_screen_zero;
 	whitgl_float music_volume = 0;
 	whitgl_float map_anim = 0;
 
@@ -112,6 +114,8 @@ int main(int argc, char** argv)
 			if(editing)
 			{
 				editor = editor_update(editor, &map, setup.pixel_size);
+				if(whitgl_input_pressed(WHITGL_INPUT_ESC))
+					running = false;
 			}
 			else if(endscreen.active)
 			{
@@ -121,14 +125,26 @@ int main(int argc, char** argv)
 				if(whitgl_input_pressed(WHITGL_INPUT_ESC))
 					running = false;
 			}
+			else if(pausescreen.active)
+			{
+				if(whitgl_input_pressed(WHITGL_INPUT_ESC))
+					pausescreen.active = !pausescreen.active;
+			}
 			else
 			{
 				game = game_update(game, &map, setup.size);
 				map_anim = whitgl_fwrap(map_anim+0.05, 0, 1);
 				if(game.snake.pos[0].x < 1)
 					endscreen = end_screen_init(game.score, game.time_taken);
+				if(whitgl_input_pressed(WHITGL_INPUT_ESC))
+				{
+					pausescreen.active = true;
+					pausescreen.selection = 0;
+				}
 			}
-
+			pausescreen = pause_screen_update(pausescreen);
+			if(pausescreen.should_exit)
+				running = false;
 			if(whitgl_sys_should_close())
 				running = false;
 
@@ -148,6 +164,7 @@ int main(int argc, char** argv)
 		if(!editing)
 			game_draw_over(game);
 		end_screen_draw(endscreen, setup.size);
+		pause_screen_draw(pausescreen, setup.size);
 		whitgl_set_shader_uniform(WHITGL_SHADER_POST, 0, game.camera_shake);
 		whitgl_sys_draw_finish();
 	}
