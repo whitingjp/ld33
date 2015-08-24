@@ -39,6 +39,8 @@ typedef struct
 	whitgl_ivec camera;
 	whitgl_float camera_shake;
 	whitgl_ivec shook_camera;
+	whitgl_int score;
+	whitgl_float time_taken;
 } game_game;
 game_game game_game_zero(const game_map* map, whitgl_ivec screen_size);
 

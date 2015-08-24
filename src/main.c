@@ -122,7 +122,7 @@ int main(int argc, char** argv)
 				game = game_update(game, &map, setup.size);
 				map_anim = whitgl_fwrap(map_anim+0.05, 0, 1);
 				if(game.snake.pos[0].x < 1)
-					endscreen = end_screen_init(100, 120);
+					endscreen = end_screen_init(game.score, game.time_taken);
 			}
 
 			if(whitgl_input_pressed(WHITGL_INPUT_ESC))

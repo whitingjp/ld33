@@ -58,6 +58,9 @@ game_game game_game_zero(const game_map* map, whitgl_ivec screen_size)
 	game.fcamera = whitgl_fvec_inverse(_game_camera_target(game, screen_size));
 	game.camera = whitgl_fvec_to_ivec(game.fcamera);
 	game.camera_shake = 0;
+
+	game.score = 0;
+	game.time_taken = 0;
 	return game;
 }
 
@@ -185,6 +188,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 			continue;
 		game.pickups[i] = game_pickup_picked(game.pickups[i]);
 		game.camera_shake += 0.1;
+		game.score++;
 	}
 
 	if(whitgl_randfloat() > 1-game.snake.size*0.005)
@@ -197,6 +201,7 @@ game_game game_update(game_game game, const game_map* map, whitgl_ivec screen_si
 		game.next_blood = whitgl_iwrap(game.next_blood+1, 0, NUM_BLOOD);
 	}
 
+	game.time_taken += 1.0/60.0;
 	return game;
 }
 
