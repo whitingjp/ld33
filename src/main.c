@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 	setup.size.x = 160;
 	setup.size.y = 90;
 	setup.pixel_size = 5;
-	setup.name = "LD33";
+	setup.name = "Bloodworm";
 	setup.vsync = vsync;
 	setup.fullscreen = fullscreen;
 	setup.cursor = can_edit ? CURSOR_SHOW : CURSOR_DISABLE;
