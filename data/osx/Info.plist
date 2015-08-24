@@ -5,15 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
-	<string>ld33</string>
+	<string>bloodworm</string>
 	<key>CFBundleIconFile</key>
-	<string>ld33</string>
+	<string>bloodworm</string>
 	<key>CFBundleIdentifier</key>
-	<string>whitingjp.ld33</string>
+	<string>whitingjp.bloodworm</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>ld33</string>
+	<string>Bloodworm</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
