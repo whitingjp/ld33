@@ -27,11 +27,11 @@ def main():
   n = ninja_syntax.Writer(buildfile)
   cflags = build.cflags + ' -Iwhitgl/inc -Isrc'
   build.rules(n, cflags, build.ldflags)
-  if build.plat == 'Windows':
-    n.rule('windres', command='windres $in -O coff -o $out', description='windres $out')
+  #if build.plat == 'Windows':
+  #  n.rule('windres', command='windres $in -O coff -o $out', description='windres $out')
   obj = build.walk_src(n, srcdir, objdir)
-  if build.plat == 'Windows':
-    obj += n.build(joinp(objdir, 'icon.res'), 'windres', joinp(data_in, 'win', 'Bloodworm.rc'))
+  #if build.plat == 'Windows':
+  #  obj += n.build(joinp(objdir, 'icon.res'), 'windres', joinp(data_in, 'win', 'Bloodworm.rc'))
   whitgl = [joinp('whitgl','build','lib','whitgl.a')]
   targets = []
   targets += n.build(joinp(executabledir, target), 'link', obj+whitgl)
